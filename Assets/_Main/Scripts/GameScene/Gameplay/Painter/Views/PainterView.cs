@@ -24,7 +24,7 @@ namespace _Main.Scripts.Gameplay.Painter
 
             GL.PushMatrix();
             GL.MultMatrix(transform.localToWorldMatrix);
-            lineMaterial.SetColor("_Color", Color.white);
+            lineMaterial.SetColor("_Color", Color.black);
             lineMaterial.SetPass(0);
             GL.Begin(GL.LINES);
             for (int i = 0, n = _points.Count - 1; i < n; i++)

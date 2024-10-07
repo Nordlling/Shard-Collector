@@ -5,7 +5,7 @@ using Sirenix.Serialization;
 using UnityEngine;
 namespace App.Scripts.Scenes.Game.Configs.Pool
 {
-    [CreateAssetMenu(menuName = "Configs/Pool/Scenes/Game/GamePoolPrefabs", fileName = "GamePoolPrefabs")]
+    [CreateAssetMenu(menuName = "Configs/GameScene/Pool/GamePoolPrefabsConfig", fileName = "GamePoolPrefabsConfig")]
     public class GamePoolPrefabsConfig : SerializedScriptableObject
     {
         [OdinSerialize] [NonSerialized] public MonoPoolData shapePoolData;

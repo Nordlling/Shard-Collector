@@ -18,6 +18,7 @@ namespace _Main.Scripts
 		private readonly Camera _mainCamera;
 		private readonly PatternDrawingConfig _patternDrawingConfig;
 		private readonly PainterView _painterView;
+		private readonly ILevelLoadService _levelLoadService;
 
 		private bool _dragging;
 		private List<Vector2> _points = new();
@@ -25,11 +26,13 @@ namespace _Main.Scripts
 
 		public World World { get; set; }
 
-		public PainterSystem(Camera mainCamera, PatternDrawingConfig patternDrawingConfig, PainterView painterView)
+		public PainterSystem(Camera mainCamera, PatternDrawingConfig patternDrawingConfig, 
+			PainterView painterView, ILevelLoadService levelLoadService)
 		{
 			_mainCamera = mainCamera;
 			_patternDrawingConfig = patternDrawingConfig;
 			_painterView = painterView;
+			_levelLoadService = levelLoadService;
 		}
 
 		public void OnAwake()
@@ -58,7 +61,7 @@ namespace _Main.Scripts
 			}
 			else if (Input.GetKeyUp(KeyCode.F))
 			{
-				_points = LocalStorage.LoadList<Vector2>("points2.json");
+				_points = _levelLoadService.GetDefaultLevel().Points;
 				CreatePattern();
 			}
 
