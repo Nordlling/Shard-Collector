@@ -1,7 +1,6 @@
-using _Main.Scripts.Spawn;
 using Zenject;
 
-namespace App.Scripts.Scenes.Game.LifeCycle.Installers
+namespace _Main.Scripts.GameScene.MonoInstallers
 {
     public class GameSceneStarterInstaller : MonoInstaller
     {

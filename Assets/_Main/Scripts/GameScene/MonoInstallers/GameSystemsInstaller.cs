@@ -1,15 +1,11 @@
-using _Main.Scripts;
 using _Main.Scripts.Gameplay.GameBoard;
 using _Main.Scripts.Spawn;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Services;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Systems;
-using App.Scripts.Modules.Pool.Container;
-using App.Scripts.Modules.Pool.Extensions;
-using App.Scripts.Scenes.Game.Configs.Pool;
 using Scellecs.Morpeh;
-using UnityEngine;
 using Zenject;
-namespace App.Scripts.Scenes.Game.LifeCycle.Installers
+
+namespace _Main.Scripts.GameScene.MonoInstallers
 {
     public class GameSystemsInstaller : MonoInstaller
     {

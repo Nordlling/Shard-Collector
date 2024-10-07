@@ -1,8 +1,7 @@
 using System;
-using App.Scripts.Modules.Bootstrap.Application.Configs;
 using App.Scripts.Modules.Utils.RandomService;
-using DG.Tweening;
-using UnityEngine;
+using Main.Scripts.Infrastructure.Services.GameGrid.Loader;
+using Main.Scripts.Infrastructure.Services.GameGrid.Parser;
 using Zenject;
 
 namespace _Main.Scripts.Common.Installers
@@ -13,6 +12,8 @@ namespace _Main.Scripts.Common.Installers
         public override void InstallBindings()
         {
             Container.Bind<IRandomService>().To<SystemRandomService>().AsSingle().WithArguments(DateTime.Now.Millisecond);
+            Container.Bind<ISimpleLoader>().To<SimpleLoader>().AsSingle();
+            Container.Bind<ISimpleParser>().To<SimpleParser>().AsSingle();
         }
     }
 }

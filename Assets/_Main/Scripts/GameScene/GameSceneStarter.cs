@@ -5,7 +5,7 @@ using Scellecs.Morpeh;
 using UnityEngine;
 using Zenject;
 
-namespace _Main.Scripts.Spawn
+namespace _Main.Scripts.GameScene
 {
     public class GameSceneStarter : IInitializable, ITickable
     {

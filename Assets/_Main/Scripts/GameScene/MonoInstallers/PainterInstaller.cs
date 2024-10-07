@@ -1,7 +1,8 @@
 using _Main.Scripts.Gameplay.Painter;
 using UnityEngine;
 using Zenject;
-namespace App.Scripts.Scenes.Game.LifeCycle.Installers
+
+namespace _Main.Scripts.GameScene.MonoInstallers
 {
     public class PainterInstaller : MonoInstaller
     {
