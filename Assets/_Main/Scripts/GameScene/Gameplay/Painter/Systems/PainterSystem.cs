@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 using _Main.Scripts.Gameplay.GameBoard;
 using _Main.Scripts.Gameplay.Painter;
+using _Main.Scripts.GameScene.MonoInstallers;
 using _Main.Scripts.Pattern;
 using _Main.Scripts.Spawn;
-using mattatz.Utils;
+using _Main.Scripts.Spawn.Services;
 using Scellecs.Morpeh;
 
 namespace _Main.Scripts 
@@ -19,6 +19,7 @@ namespace _Main.Scripts
 		private readonly PatternDrawingConfig _patternDrawingConfig;
 		private readonly PainterView _painterView;
 		private readonly ILevelLoadService _levelLoadService;
+		private readonly GameBoardContent _gameBoardContent;
 
 		private bool _dragging;
 		private List<Vector2> _points = new();
@@ -27,12 +28,13 @@ namespace _Main.Scripts
 		public World World { get; set; }
 
 		public PainterSystem(Camera mainCamera, PatternDrawingConfig patternDrawingConfig, 
-			PainterView painterView, ILevelLoadService levelLoadService)
+			PainterView painterView, ILevelLoadService levelLoadService, GameBoardContent gameBoardContent)
 		{
 			_mainCamera = mainCamera;
 			_patternDrawingConfig = patternDrawingConfig;
 			_painterView = painterView;
 			_levelLoadService = levelLoadService;
+			_gameBoardContent = gameBoardContent;
 		}
 
 		public void OnAwake()
@@ -94,7 +96,11 @@ namespace _Main.Scripts
 			
 			Entity patternEntity = World.CreateEntity();
 			patternEntity.SetComponent(new CreatePatternSignal { Points = _points });
-			patternEntity.SetComponent(new ShapeSpawnSignal { Size = Vector3.one });
+			patternEntity.SetComponent(new ShapeSpawnSignal
+			{
+				Parent = _gameBoardContent.PatternContent,
+				Size = Vector3.one
+			});
 		}
 
 		private void SwitchMoveAllShapes()

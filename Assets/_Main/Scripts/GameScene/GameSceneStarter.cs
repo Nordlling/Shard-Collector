@@ -1,4 +1,7 @@
 using _Main.Scripts.Gameplay.GameBoard;
+using _Main.Scripts.GameScene.MonoInstallers;
+using _Main.Scripts.Spawn;
+using _Main.Scripts.Spawn.Services;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Services;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Systems;
 using Scellecs.Morpeh;
@@ -12,13 +15,15 @@ namespace _Main.Scripts.GameScene
         private readonly IWorldRunner _worldRunner;
         private readonly ISystemGroupContainer _systemGroupContainer;
         private readonly ILevelLoadService _levelLoadService;
+        private readonly GameBoardContent _gameBoardContent;
 
         public GameSceneStarter(IWorldRunner worldRunner, ISystemGroupContainer systemGroupContainer, 
-            ILevelLoadService levelLoadService)
+            ILevelLoadService levelLoadService, GameBoardContent gameBoardContent)
         {
             _worldRunner = worldRunner;
             _systemGroupContainer = systemGroupContainer;
             _levelLoadService = levelLoadService;
+            _gameBoardContent = gameBoardContent;
         }
         public void StartGameScene()
         {
@@ -35,6 +40,7 @@ namespace _Main.Scripts.GameScene
             });
             patternEntity.SetComponent(new ShapeSpawnSignal
             {
+                Parent = _gameBoardContent.PatternContent,
                 Size = Vector3.one,
                 Position = new Vector3(0f, 0f, 5f)
             });

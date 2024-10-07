@@ -13,6 +13,5 @@ namespace _Main.Scripts.Spawn
         public Vector3 Position;
         public Vector3 Size;
         public Triangle2D[] Triangles;
-        public Material MeshRendererMaterial;
     }
 }

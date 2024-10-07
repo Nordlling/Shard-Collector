@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Main.Scripts.GameScene.MonoInstallers;
 using _Main.Scripts.Pattern;
 using _Main.Scripts.Spawn;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
@@ -18,18 +19,20 @@ namespace _Main.Scripts.Gameplay.GameBoard
         private readonly PatternDrawingConfig _patternDrawingConfig;
         private readonly RenderConfig _renderConfig;
         private readonly IRandomService _randomService;
+        private readonly GameBoardContent _gameBoardContent;
 
         private Filter _createPatternShapesFilter;
 
         public World World { get; set; }
 
         public PatternSpawnSystem(IPool<ShapeView> pool, PatternDrawingConfig patternDrawingConfig, 
-            RenderConfig renderConfig, IRandomService randomService)
+            RenderConfig renderConfig, IRandomService randomService, GameBoardContent gameBoardContent)
         {
             _pool = pool;
             _patternDrawingConfig = patternDrawingConfig;
             _renderConfig = renderConfig;
             _randomService = randomService;
+            _gameBoardContent = gameBoardContent;
         }
 
         public void OnAwake()
@@ -142,6 +145,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
                 
                 shapeEntity.SetComponent(new ShapeSpawnSignal
                 {
+                    Parent = _gameBoardContent.ShapesContent,
                     Size = Vector3.one,
                     Triangles = shapeTriangles.ToArray()
                 });
