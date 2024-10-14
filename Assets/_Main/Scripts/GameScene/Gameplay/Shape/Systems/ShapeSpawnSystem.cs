@@ -39,6 +39,8 @@ namespace _Main.Scripts.Spawn
                     continue;
                 }
                 
+                ShapeUtils.RecalculateCenter(spawnSignal.Triangles);
+                
                 Mesh mesh = ShapeUtils.CreateMesh(spawnSignal.Triangles);
 
                 var shapeView = _pool.Get();

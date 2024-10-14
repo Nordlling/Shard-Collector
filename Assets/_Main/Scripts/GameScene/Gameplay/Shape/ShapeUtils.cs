@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using mattatz.Triangulation2DSystem;
 
@@ -34,6 +35,44 @@ namespace _Main.Scripts
 			mesh.RecalculateBounds();
 
 			return mesh;
+		}
+		
+		public static void RecalculateCenter(Triangle2D[] triangles)
+		{
+			var minXPosition = float.MaxValue;
+			var maxXPosition = float.MinValue;
+			var minYPosition = float.MaxValue;
+			var maxYPosition = float.MinValue;
+
+			foreach (var triangle in triangles)
+			{
+				minXPosition = Math.Min(triangle.a.Coordinate.x, minXPosition);
+				minXPosition = Math.Min(triangle.b.Coordinate.x, minXPosition);
+				minXPosition = Math.Min(triangle.c.Coordinate.x, minXPosition);
+				
+				maxXPosition = Math.Max(triangle.a.Coordinate.x, maxXPosition);
+				maxXPosition = Math.Max(triangle.b.Coordinate.x, maxXPosition);
+				maxXPosition = Math.Max(triangle.c.Coordinate.x, maxXPosition);
+				
+				minYPosition = Math.Min(triangle.a.Coordinate.y, minYPosition);
+				minYPosition = Math.Min(triangle.b.Coordinate.y, minYPosition);
+				minYPosition = Math.Min(triangle.c.Coordinate.y, minYPosition);
+				
+				maxYPosition = Math.Max(triangle.a.Coordinate.y, maxYPosition);
+				maxYPosition = Math.Max(triangle.b.Coordinate.y, maxYPosition);
+				maxYPosition = Math.Max(triangle.c.Coordinate.y, maxYPosition);
+			}
+			
+			var centerXPosition = minXPosition + (maxXPosition - minXPosition) / 2;
+			var centerYPosition = minYPosition + (maxYPosition - minYPosition) / 2;
+			var offset = Vector2.zero - new Vector2(centerXPosition, centerYPosition);
+
+			foreach (var triangle in triangles)
+			{
+				triangle.a = new Vertex2D(triangle.a.Coordinate + offset);
+				triangle.b = new Vertex2D(triangle.b.Coordinate + offset);
+				triangle.c = new Vertex2D(triangle.c.Coordinate + offset);
+			}
 		}
 
 		public static List<Vector3> FindExternalPoints(Triangle2D[] triangles, Vector3 shapeCenterPosition)
