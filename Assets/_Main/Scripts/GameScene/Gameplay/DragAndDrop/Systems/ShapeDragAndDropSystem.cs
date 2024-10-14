@@ -13,10 +13,13 @@ namespace _Main.Scripts
 		
 		private Filter _shapesFilter;
 		private Filter _patternFilter;
-		
+		private Filter _shapeSelectorFilter;
+
 		private bool _dragging;
-		private ShapeComponent _draggedShapeComponent;
+		private bool _magnet;
+		private Entity _draggedShapeEntity;
 		private Vector2 _centerOffset;
+		private readonly Dictionary<Vector3, int> _magnetMap = new();
 
 		public World World { get; set; }
 
@@ -30,6 +33,7 @@ namespace _Main.Scripts
 		{
 			_shapesFilter = World.Filter
 				.With<ShapeComponent>()
+				// .With<ShapeInSelectorComponent>()
 				.Without<PatternMarker>()
 				.Build();
 			
@@ -37,82 +41,128 @@ namespace _Main.Scripts
 				.With<ShapeComponent>()
 				.With<PatternMarker>()
 				.Build();
+			
+			_shapeSelectorFilter = World.Filter
+				.With<ShapeSelectorComponent>()
+				.Build();
 		}
 
 		public void OnUpdate(float deltaTime)
 		{
 			if (Input.GetMouseButtonDown(1))
 			{
-				Vector3 screen = Input.mousePosition;
-				screen.z = Mathf.Abs(_camera.transform.position.z - 0f);
-				Vector3 mousePosition = _camera.ScreenToWorldPoint(screen);
-				Vector2 mousePosition2D = new Vector2(mousePosition.x, mousePosition.y);
-
-				foreach (var entity in _shapesFilter)
-				{
-					var shapeComponent = entity.GetComponent<ShapeComponent>();
-					var shapeView = shapeComponent.ShapeView;
-					if (mousePosition2D.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
-					{
-						_draggedShapeComponent = shapeComponent;
-						_dragging = true;
-						_centerOffset = shapeComponent.ShapeView.transform.position - mousePosition;
-						break;
-					}
-				}
-				
+				TryTakeShape();
 			}
-			else if (Input.GetMouseButtonUp(1)) 
+			else if (Input.GetMouseButtonUp(1))
 			{
+				TryDropShape();
 				_dragging = false;
 			}
 
-			if (_dragging) {
-				Vector3 screen = Input.mousePosition;
-				screen.z = Mathf.Abs(_camera.transform.position.z - 0f);
-				Vector3 mousePosition = _camera.ScreenToWorldPoint(screen);
-				Transform shapeTransform = _draggedShapeComponent.ShapeView.transform;
-				Vector2 newShapePosition = new Vector3(mousePosition.x, mousePosition.y, shapeTransform.position.z);
-				shapeTransform.position = newShapePosition + _centerOffset;
-				CheckMagnet();
+			if (_dragging)
+			{
+				DragShape();
+			}
+		}
+
+		private void TryTakeShape()
+		{
+			Vector3 screen = Input.mousePosition;
+			screen.z = Mathf.Abs(_camera.transform.position.z - 0f);
+			Vector3 mousePosition = _camera.ScreenToWorldPoint(screen);
+			Vector2 mousePosition2D = new Vector2(mousePosition.x, mousePosition.y);
+
+			foreach (var entity in _shapesFilter)
+			{
+				var shapeComponent = entity.GetComponent<ShapeComponent>();
+				var shapeView = shapeComponent.ShapeView;
+				if (mousePosition2D.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
+				{
+					_draggedShapeEntity = entity;
+					_dragging = true;
+					_centerOffset = shapeComponent.ShapeView.transform.position - mousePosition;
+					if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
+					{
+						_draggedShapeEntity.AddComponent<ShapeFromSelectorSignal>();
+					}
+					break;
+				}
+			}
+		}
+
+		private void DragShape()
+		{
+			Vector3 screen = Input.mousePosition;
+			screen.z = Mathf.Abs(_camera.transform.position.z - 0f);
+			Vector3 mousePosition = _camera.ScreenToWorldPoint(screen);
+			Transform shapeTransform = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView.transform;
+			Vector2 newShapePosition = new Vector3(mousePosition.x, mousePosition.y, shapeTransform.position.z);
+			shapeTransform.position = newShapePosition + _centerOffset;
+			CheckMagnet();
+		}
+
+		private void TryDropShape()
+		{
+			if (!_dragging || !_draggedShapeEntity.Has<ShapeInSelectorComponent>())
+			{
+				return;
+			}
+			
+			if (_magnet)
+			{
+				_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
+				if (_shapeSelectorFilter.TryGetFirstEntity(out var shapeSelectorEntity))
+				{
+					shapeSelectorEntity.AddComponent<ShapeSelectorResortSignal>();
+				}
+			}
+			else
+			{
+				_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
 			}
 		}
 
 		private void CheckMagnet()
 		{
-			if (!_patternFilter.TryGetFirstEntity(out var shapesMap))
+			if (!_patternFilter.TryGetFirstEntity(out var patternEntity))
 			{
 				return;
 			}
 
-			var shapesMapPoints = shapesMap.GetComponent<ShapeComponent>().Points;
-			Dictionary<Vector2, int> checker = new();
-			Vector3 shapePosition = _draggedShapeComponent.ShapeView.transform.position;
+			_magnet = false;
+			_magnetMap.Clear();
+
+			Vector3[] patternPoints = patternEntity.GetComponent<ShapeComponent>().Points;
 			
-			foreach (Vector3 externalOffset in _draggedShapeComponent.ExternalPoints)
+			ShapeComponent shapeComponent = _draggedShapeEntity.GetComponent<ShapeComponent>();
+			Vector3 shapePosition = shapeComponent.ShapeView.transform.position;
+
+			foreach (Vector3 externalOffset in shapeComponent.ExternalPointOffsets)
 			{
 				Vector3 externalPoint = shapePosition + externalOffset;
-				foreach (Vector3 mapPoint in shapesMapPoints)
+				foreach (Vector3 patternPoint in patternPoints)
 				{
-					if (Vector2.Distance(externalPoint, mapPoint) <= _shapeDragAndDropConfig.MinOverlapDistance)
+					Vector3 distanceFromShapeToPattern = patternPoint - externalPoint;
+					
+					if (distanceFromShapeToPattern.magnitude <= _shapeDragAndDropConfig.MinOverlapDistance)
 					{
-						Vector2 distance = mapPoint - externalPoint;
-						checker.TryAdd(distance, 0);
-						checker[distance]++;
+						_magnetMap.TryAdd(distanceFromShapeToPattern, 0);
+						_magnetMap[distanceFromShapeToPattern]++;
 						break;
 					}
 				}
 			}
 
-			if (checker.Count == 0)
+			if (_magnetMap.Count == 0)
 			{
 				return;
 			}
 
-			var maxEntry = checker.Aggregate((max, next) => next.Value > max.Value ? next : max);
-			if (maxEntry.Value >= _shapeDragAndDropConfig.MinOverlapCount)
+			var maxEntry = _magnetMap.Aggregate((max, next) => next.Value > max.Value ? next : max);
+			_magnet = maxEntry.Value >= _shapeDragAndDropConfig.MinOverlapCount;
+			if (_magnet)
 			{
-				_draggedShapeComponent.ShapeView.transform.position += new Vector3(maxEntry.Key.x, maxEntry.Key.y, 0f);
+				shapeComponent.ShapeView.transform.position += maxEntry.Key;
 			}
 		}
 

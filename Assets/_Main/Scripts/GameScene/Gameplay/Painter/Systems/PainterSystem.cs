@@ -6,6 +6,7 @@ using _Main.Scripts.GameScene.MonoInstallers;
 using _Main.Scripts.Pattern;
 using _Main.Scripts.Spawn;
 using _Main.Scripts.Spawn.Services;
+using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
 
 namespace _Main.Scripts 
@@ -14,6 +15,7 @@ namespace _Main.Scripts
 	{
 		private Filter _shapeFilter;
 		private Filter _patternFilter;
+		private Filter _shapeSelectorFilter;
 
 		private readonly Camera _mainCamera;
 		private readonly PatternDrawingConfig _patternDrawingConfig;
@@ -49,6 +51,10 @@ namespace _Main.Scripts
 			_patternFilter = World.Filter
 				.With<ShapeComponent>()
 				.With<PatternMarker>()
+				.Build();
+			
+			_shapeSelectorFilter = World.Filter
+				.With<ShapeSelectorComponent>()
 				.Build();
 		}
 
@@ -101,6 +107,11 @@ namespace _Main.Scripts
 				Parent = _gameBoardContent.PatternContent,
 				Size = Vector3.one
 			});
+
+			if (_shapeSelectorFilter.TryGetFirstEntity(out var shapeSelectorEntity))
+			{
+				shapeSelectorEntity.AddComponent<AllShapesInSelectorSignal>();
+			}
 		}
 
 		private void SwitchMoveAllShapes()

@@ -16,14 +16,16 @@ namespace _Main.Scripts.GameScene
         private readonly ISystemGroupContainer _systemGroupContainer;
         private readonly ILevelLoadService _levelLoadService;
         private readonly GameBoardContent _gameBoardContent;
+        private readonly GameBoardInitializer _gameBoardInitializer;
 
         public GameSceneStarter(IWorldRunner worldRunner, ISystemGroupContainer systemGroupContainer, 
-            ILevelLoadService levelLoadService, GameBoardContent gameBoardContent)
+            ILevelLoadService levelLoadService, GameBoardContent gameBoardContent, GameBoardInitializer gameBoardInitializer)
         {
             _worldRunner = worldRunner;
             _systemGroupContainer = systemGroupContainer;
             _levelLoadService = levelLoadService;
             _gameBoardContent = gameBoardContent;
+            _gameBoardInitializer = gameBoardInitializer;
         }
         public void StartGameScene()
         {
@@ -44,6 +46,8 @@ namespace _Main.Scripts.GameScene
                 Size = Vector3.one,
                 Position = new Vector3(0f, 0f, 5f)
             });
+            
+            _gameBoardInitializer.Init();
         }
 
         public void Initialize()

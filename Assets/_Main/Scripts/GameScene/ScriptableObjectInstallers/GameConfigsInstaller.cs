@@ -1,6 +1,5 @@
 using _Main.Scripts.Pattern;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace _Main.Scripts.GameScene.ScriptableObjectInstallers
@@ -10,13 +9,15 @@ namespace _Main.Scripts.GameScene.ScriptableObjectInstallers
     {
         [SerializeField] private PatternDrawingConfig patternDrawingConfig;
         [SerializeField] private ShapeDragAndDropConfig shapeDragAndDropConfig;
-        [FormerlySerializedAs("shapeRenderConfig")] [SerializeField] private RenderConfig renderConfig;
+        [SerializeField] private RenderConfig renderConfig;
+        [SerializeField] private ShapeSelectorConfig shapeSelectorConfig;
 
         public override void InstallBindings()
         {
             Container.Bind<PatternDrawingConfig>().FromInstance(patternDrawingConfig).AsSingle();
             Container.Bind<ShapeDragAndDropConfig>().FromInstance(shapeDragAndDropConfig).AsSingle();
             Container.Bind<RenderConfig>().FromInstance(renderConfig).AsSingle();
+            Container.Bind<ShapeSelectorConfig>().FromInstance(shapeSelectorConfig).AsSingle();
         }
     }
 }

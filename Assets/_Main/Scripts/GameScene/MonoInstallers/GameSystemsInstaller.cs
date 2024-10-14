@@ -14,13 +14,18 @@ namespace _Main.Scripts.GameScene.MonoInstallers
         {
             Container.Bind<IWorldRunner>().To<WorldRunner>().AsSingle();
             Container.Bind<ISystemGroupContainer>().To<SystemGroupContainer>().AsSingle();
-            
+
             Container.Bind<ISystem>().To<GameBoardSystem>().AsCached();
+            Container.Bind<ISystem>().To<PainterSystem>().AsCached();
             Container.Bind<ISystem>().To<PatternSpawnSystem>().AsCached();
             Container.Bind<ISystem>().To<ShapeSpawnSystem>().AsCached();
+            Container.Bind<ISystem>().To<ShapeSelectorFillSystem>().AsCached();
             Container.Bind<ISystem>().To<ShapeDragAndDropSystem>().AsCached();
-            Container.Bind<ISystem>().To<PainterSystem>().AsCached();
+            Container.Bind<ISystem>().To<ShapeSelectorResortSystem>().AsCached();
+            Container.Bind<ISystem>().To<ShapeSelectorMoveSystem>().AsCached();
             Container.Bind<ISystem>().To<ShapeDestroySystem>().AsCached();
+
+            Container.Bind<GameBoardInitializer>().AsSingle();
         }
         
     }
