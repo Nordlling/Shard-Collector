@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patternDrawingConfig: {fileID: 11400000, guid: ecf617e8802a745a090898ad57586c62, type: 2}
   shapeDragAndDropConfig: {fileID: 11400000, guid: a030d6d7abfff463a803bd345317ce47, type: 2}
-  shapeRenderConfig: {fileID: 11400000, guid: bb0fdffa504104c9dbbedacb75eea236, type: 2}
+  renderConfig: {fileID: 11400000, guid: bb0fdffa504104c9dbbedacb75eea236, type: 2}
+  shapeSelectorConfig: {fileID: 11400000, guid: ee3fa6bcb6fc1436ca95ea93a995fcca, type: 2}
