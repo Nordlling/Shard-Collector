@@ -54,7 +54,7 @@ namespace _Main.Scripts.Spawn
                 shapeComponent.ShapeView = shapeView;
                 shapeComponent.Triangles = spawnSignal.Triangles;
                 shapeComponent.Points = mesh.vertices;
-                shapeComponent.ExternalPoints = externalPoints;
+                shapeComponent.ExternalPointOffsets = externalPoints;
                 
                 entity.RemoveComponent<ShapeSpawnSignal>();
             }

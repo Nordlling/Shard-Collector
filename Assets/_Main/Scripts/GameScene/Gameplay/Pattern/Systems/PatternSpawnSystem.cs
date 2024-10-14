@@ -101,7 +101,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
                 Points = mesh.vertices,
                 Triangles = triangulation.Triangles,
                 ShapeView = patternView,
-                ExternalPoints = externalPoints
+                ExternalPointOffsets = externalPoints
             };
             
             patternEntity.SetComponent(patternShapeComponent);
@@ -115,7 +115,6 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
         private void CreateShapesByPattern(Triangle2D[] triangles)
         {
-            List<Triangle2D> usedTriangles = new();
             List<Triangle2D> activeTriangles = new();
             List<Triangle2D> allTriangles = new(triangles);
             List<List<Triangle2D>> shapes = new();
@@ -126,6 +125,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
             while (allTriangles.Count != 0)
             {
+                List<Triangle2D> usedTriangles = new();
                 int firstTriangleIndex = _randomService.Range(0, allTriangles.Count);
                 Triangle2D firstTriangle = allTriangles[firstTriangleIndex];
                 activeTriangles.Add(firstTriangle);
@@ -134,9 +134,8 @@ namespace _Main.Scripts.Gameplay.GameBoard
 				
                 CreateShape(allTriangles, usedTriangles, activeTriangles, maxCount);
 				
-                shapes.Add(new List<Triangle2D>(usedTriangles));
+                shapes.Add(usedTriangles);
                 allTriangles.RemoveAll(el => usedTriangles.Contains(el));
-                usedTriangles.Clear();
             }
 
             foreach (var shapeTriangles in shapes)

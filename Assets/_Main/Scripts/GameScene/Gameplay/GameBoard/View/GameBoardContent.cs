@@ -6,10 +6,10 @@ namespace _Main.Scripts.GameScene.MonoInstallers
     {
         [SerializeField] private Transform patternContent;
         [SerializeField] private Transform shapesContent;
-        [SerializeField] private Transform shapesSelectorContent;
+        [SerializeField] private Transform shapeSelectorContent;
 
         public Transform PatternContent => patternContent;
         public Transform ShapesContent => shapesContent;
-        public Transform ShapesSelectorContent => shapesSelectorContent;
+        public Transform ShapeSelectorContent => shapeSelectorContent;
     }
 }

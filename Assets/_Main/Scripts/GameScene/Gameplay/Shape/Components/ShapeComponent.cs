@@ -12,7 +12,7 @@ namespace _Main.Scripts
 		public ShapeView ShapeView;
 		public Triangle2D[] Triangles;
 		public Vector3[] Points;
-		public List<Vector3> ExternalPoints;
+		public List<Vector3> ExternalPointOffsets;
 	}
 }
 

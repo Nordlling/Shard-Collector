@@ -91,10 +91,10 @@ namespace _Main.Scripts
 
 		private static void TryAddPoint(Vector3 shapeCenterPosition, Vector3 point, List<Vector3> externalPoints)
 		{
-			var externalOffset1 = point - shapeCenterPosition;
-			if (!externalPoints.Contains(externalOffset1))
+			var externalOffset = point - shapeCenterPosition;
+			if (!externalPoints.Contains(externalOffset))
 			{
-				externalPoints.Add(externalOffset1);
+				externalPoints.Add(externalOffset);
 			}
 		}
 
