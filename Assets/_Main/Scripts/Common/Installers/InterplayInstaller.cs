@@ -1,3 +1,4 @@
+using _Main.Scripts.Toolkit.Screen;
 using UnityEngine;
 using Zenject;
 
@@ -10,6 +11,7 @@ namespace _Main.Scripts.Common.Installers
         public override void InstallBindings()
         {
             Container.Bind<Camera>().FromInstance(mainCamera).AsCached();
+            Container.Bind<IScreenService>().To<ScreenService>().AsSingle();
         }
     }
 }
