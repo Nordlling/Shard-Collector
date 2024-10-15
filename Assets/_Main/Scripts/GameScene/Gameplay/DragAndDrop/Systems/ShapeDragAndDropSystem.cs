@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Linq;
 using System.Collections.Generic;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
@@ -132,43 +131,100 @@ namespace _Main.Scripts
 			_magnet = false;
 			_magnetMap.Clear();
 
-			Vector3[] patternPoints = patternEntity.GetComponent<ShapeComponent>().Points;
-			
-			ShapeComponent shapeComponent = _draggedShapeEntity.GetComponent<ShapeComponent>();
+			var patternShapeComponent = patternEntity.GetComponent<ShapeComponent>();
+			var shapeComponent = _draggedShapeEntity.GetComponent<ShapeComponent>();
 			Vector3 shapePosition = shapeComponent.ShapeView.transform.position;
 
 			foreach (Vector3 externalOffset in shapeComponent.ExternalPointOffsets)
 			{
 				Vector3 externalPoint = shapePosition + externalOffset;
-				foreach (Vector3 patternPoint in patternPoints)
+
+				foreach (Vector3 patternPoint in patternShapeComponent.Points)
 				{
 					Vector3 distanceFromShapeToPattern = patternPoint - externalPoint;
 					
-					if (distanceFromShapeToPattern.magnitude <= _shapeDragAndDropConfig.MinOverlapDistance)
+					if (distanceFromShapeToPattern.magnitude <= _shapeDragAndDropConfig.MaxOverlapDistance)
 					{
 						_magnetMap.TryAdd(distanceFromShapeToPattern, 0);
 						_magnetMap[distanceFromShapeToPattern]++;
-						break;
 					}
 				}
 			}
+			
+			Vector3 minDistance = FindMinDistanceFromMagnetMap();
 
-			if (_magnetMap.Count == 0)
+			Vector3 newPosition = shapePosition + minDistance;
+			
+			_magnet = minDistance != default;
+			if (_magnet && !ShapeInsidePattern(newPosition, shapeComponent.ExternalPointOffsets, patternShapeComponent))
 			{
+				_magnet = false;
 				return;
 			}
+			
+			shapeComponent.ShapeView.transform.position = newPosition;
+		}
 
-			var maxEntry = _magnetMap.Aggregate((max, next) => next.Value > max.Value ? next : max);
-			_magnet = maxEntry.Value >= _shapeDragAndDropConfig.MinOverlapCount;
-			if (_magnet)
+		private Vector3 FindMinDistanceFromMagnetMap()
+		{
+			Vector3 minDistance = default;
+
+			foreach (var key in _magnetMap.Keys)
 			{
-				shapeComponent.ShapeView.transform.position += maxEntry.Key;
+				if (_magnetMap[key] < _shapeDragAndDropConfig.MinOverlapCount)
+				{
+					continue;
+				}
+
+				if (minDistance == default || key.magnitude < minDistance.magnitude)
+				{
+					minDistance = key;
+				}
 			}
+
+			return minDistance;
+		}
+
+		private bool ShapeInsidePattern(Vector3 shapeNewPosition, List<Vector3> shapeExternalOffsets, ShapeComponent patternShapeComponent)
+		{
+			foreach (var externalOffset in shapeExternalOffsets)
+			{
+				Vector3 externalPoint = shapeNewPosition + externalOffset;
+				if (!PointInPattern(externalPoint, patternShapeComponent.ExternalPointOffsets, patternShapeComponent.ShapeView.transform.position))
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
+
+		private bool PointInPattern(Vector3 point, List<Vector3> patternOffsets, Vector3 patternPosition) 
+		{
+			bool result = false;
+			var length = patternOffsets.Count;
+			for(int i = 0, j = length - 1; i < length; j = i++)
+			{
+				var position = patternPosition + patternOffsets[i];
+				var previousPosition = patternPosition + patternOffsets[j];
+				
+				if (position == point)
+				{
+					return true;
+				}
+				if (((position.y >= point.y) != (previousPosition.y >= point.y)) && 
+				    (point.x <= (previousPosition.x - position.x) * (point.y - position.y) / (previousPosition.y - position.y) + position.x)) 
+				{
+					result = !result;
+				}
+			}
+			return result;
 		}
 
 		public void Dispose()
 		{
 		}
+		
 	}
 
 }

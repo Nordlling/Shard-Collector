@@ -126,6 +126,28 @@ namespace _Main.Scripts
 					i--;
 				}
 			}
+
+			SortEdges(externalEdges);
+		}
+
+		private static void SortEdges(List<Edge> externalEdges)
+		{
+			for (int i = 1; i < externalEdges.Count; i++)
+			{
+				if (externalEdges[i].PointA == externalEdges[i - 1].PointB)
+				{
+					continue;
+				}
+
+				for (int j = i + 1; j < externalEdges.Count; j++)
+				{
+					if (externalEdges[j].PointA == externalEdges[i - 1].PointB)
+					{
+						(externalEdges[i], externalEdges[j]) = (externalEdges[j], externalEdges[i]);
+						break;
+					}
+				}
+			}
 		}
 		
 	}

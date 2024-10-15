@@ -5,7 +5,7 @@ namespace _Main.Scripts
     [CreateAssetMenu(menuName = "Configs/ShapeDragAndDrop", fileName = "ShapeDragAndDropConfig")]
     public class ShapeDragAndDropConfig : ScriptableObject
     {
-        public int MinOverlapCount;
-        [Range(0.2f, 5f)] public float MinOverlapDistance = 1.5f;
+        [Min(0)] public int MinOverlapCount;
+        [Range(0.2f, 5f)] public float MaxOverlapDistance = 1.5f;
     }
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PatternDrawingConfig
   m_EditorClassIdentifier: 
   Angle: 20
-  Threshold: 1.5
+  Threshold: 2
   Divide: 1
