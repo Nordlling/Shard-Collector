@@ -1,5 +1,6 @@
 using _Main.Scripts.Gameplay.GameBoard;
 using _Main.Scripts.Spawn;
+using _Main.Scripts.Toolkit;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Services;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Systems;
 using Scellecs.Morpeh;
@@ -25,6 +26,10 @@ namespace _Main.Scripts.GameScene.MonoInstallers
             Container.Bind<ISystem>().To<ShapeSelectorMoveSystem>().AsCached();
             Container.Bind<ISystem>().To<ShapeDestroySystem>().AsCached();
 
+            Container.Bind<ISystem>().To<CleanupEntitySystem<DestroyEntitySignal>>().AsCached();
+            Container.Bind<ISystem>().To<CleanupComponentSystem<ShapeSpawnSignal>>().AsCached();
+            Container.Bind<ISystem>().To<CleanupComponentSystem<CreatePatternSignal>>().AsCached();
+            
             Container.Bind<GameBoardInitializer>().AsSingle();
         }
         

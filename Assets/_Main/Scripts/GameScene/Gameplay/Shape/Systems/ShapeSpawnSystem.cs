@@ -23,6 +23,7 @@ namespace _Main.Scripts.Spawn
         {
             _filter = World.Filter
                 .With<ShapeSpawnSignal>()
+                .Without<PatternMarker>()
                 .Build();
         }
 
@@ -35,7 +36,6 @@ namespace _Main.Scripts.Spawn
                 if (spawnSignal.Triangles == null)
                 {
                     UnityEngine.Debug.LogError("Null triangles");
-                    entity.RemoveComponent<ShapeSpawnSignal>();
                     continue;
                 }
                 
@@ -55,8 +55,6 @@ namespace _Main.Scripts.Spawn
                 shapeComponent.Triangles = spawnSignal.Triangles;
                 shapeComponent.Points = mesh.vertices;
                 shapeComponent.ExternalPointOffsets = externalPoints;
-                
-                entity.RemoveComponent<ShapeSpawnSignal>();
             }
         }
 

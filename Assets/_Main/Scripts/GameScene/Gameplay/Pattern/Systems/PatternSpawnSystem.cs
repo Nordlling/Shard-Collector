@@ -106,8 +106,6 @@ namespace _Main.Scripts.Gameplay.GameBoard
             };
             
             patternEntity.SetComponent(patternShapeComponent);
-            patternEntity.RemoveComponent<CreatePatternSignal>();
-            patternEntity.RemoveComponent<ShapeSpawnSignal>();
             patternEntity.AddComponent<PatternMarker>();
             // patternEntity.AddComponent<ShapeRenderMarker>();
             
