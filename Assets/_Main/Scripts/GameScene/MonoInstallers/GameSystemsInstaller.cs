@@ -24,6 +24,7 @@ namespace _Main.Scripts.GameScene.MonoInstallers
             Container.Bind<ISystem>().To<ShapeDragAndDropSystem>().AsCached();
             Container.Bind<ISystem>().To<ShapeSelectorResortSystem>().AsCached();
             Container.Bind<ISystem>().To<ShapeSelectorMoveSystem>().AsCached();
+            Container.Bind<ISystem>().To<LevelCompleteSystem>().AsCached();
             Container.Bind<ISystem>().To<ShapeDestroySystem>().AsCached();
 
             Container.Bind<ISystem>().To<CleanupEntitySystem<DestroyEntitySignal>>().AsCached();
