@@ -60,10 +60,10 @@ namespace _Main.Scripts
 
 		public void OnUpdate(float deltaTime)
 		{
-			if (Input.GetMouseButtonDown(0)) {
+			if (Input.GetMouseButtonDown(1)) {
 				_dragging = true;
 				_points.Clear();
-			} else if(Input.GetMouseButtonUp(0)) {
+			} else if(Input.GetMouseButtonUp(1)) {
 				_dragging = false;
 				CreatePattern();
 			}

@@ -48,11 +48,11 @@ namespace _Main.Scripts
 
 		public void OnUpdate(float deltaTime)
 		{
-			if (Input.GetMouseButtonDown(1))
+			if (Input.GetMouseButtonDown(0))
 			{
 				TryTakeShape();
 			}
-			else if (Input.GetMouseButtonUp(1))
+			else if (Input.GetMouseButtonUp(0))
 			{
 				TryDropShape();
 				_dragging = false;
