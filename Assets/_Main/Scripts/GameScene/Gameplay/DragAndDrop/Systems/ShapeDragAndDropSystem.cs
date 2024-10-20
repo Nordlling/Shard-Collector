@@ -19,6 +19,7 @@ namespace _Main.Scripts
 		private Entity _draggedShapeEntity;
 		private Vector2 _centerOffset;
 		private readonly Dictionary<Vector3, int> _magnetMap = new();
+		private Vector2 _newPosition;
 
 		public World World { get; set; }
 
@@ -56,12 +57,10 @@ namespace _Main.Scripts
 			{
 				TryDropShape();
 				_dragging = false;
+				_draggedShapeEntity = null;
 			}
 
-			if (_dragging)
-			{
-				DragShape();
-			}
+			TryDragShape();
 		}
 
 		private void TryTakeShape()
@@ -89,8 +88,13 @@ namespace _Main.Scripts
 			}
 		}
 
-		private void DragShape()
+		private void TryDragShape()
 		{
+			if (!_dragging)
+			{
+				return;
+			}
+			
 			Vector3 screen = Input.mousePosition;
 			screen.z = Mathf.Abs(_camera.transform.position.z - 0f);
 			Vector3 mousePosition = _camera.ScreenToWorldPoint(screen);
@@ -103,6 +107,16 @@ namespace _Main.Scripts
 		private void TryDropShape()
 		{
 			if (!_dragging || !_draggedShapeEntity.Has<ShapeInSelectorComponent>())
+			if (!_dragging)
+			{
+				return;
+			}
+
+			var shapeView = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView;
+			shapeView.transform.position = _magnet ? _newPosition : shapeView.transform.position;
+			shapeView.ShadowTransform.gameObject.SetActive(false);
+
+			if (!_draggedShapeEntity.Has<ShapeInSelectorComponent>())
 			{
 				return;
 			}
@@ -134,6 +148,8 @@ namespace _Main.Scripts
 			var patternShapeComponent = patternEntity.GetComponent<ShapeComponent>();
 			var shapeComponent = _draggedShapeEntity.GetComponent<ShapeComponent>();
 			Vector3 shapePosition = shapeComponent.ShapeView.transform.position;
+			var shadowTransform = shapeComponent.ShapeView.ShadowTransform;
+			shadowTransform.gameObject.SetActive(false);
 
 			foreach (Vector3 externalOffset in shapeComponent.ExternalPointOffsets)
 			{
@@ -153,16 +169,23 @@ namespace _Main.Scripts
 			
 			Vector3 minDistance = FindMinDistanceFromMagnetMap();
 
-			Vector3 newPosition = shapePosition + minDistance;
+			_newPosition = shapePosition + minDistance;
 			
 			_magnet = minDistance != default;
-			if (_magnet && !ShapeInsidePattern(newPosition, shapeComponent.ExternalPointOffsets, patternShapeComponent))
+
+			if (!_magnet)
+			{
+				return;
+			}
+			
+			if (!ShapeInsidePattern(_newPosition, shapeComponent.ExternalPointOffsets, patternShapeComponent))
 			{
 				_magnet = false;
 				return;
 			}
-			
-			shapeComponent.ShapeView.transform.position = newPosition;
+
+			shadowTransform.gameObject.SetActive(true);
+			shadowTransform.position = new Vector3(_newPosition.x, _newPosition.y, shadowTransform.position.z);
 		}
 
 		private Vector3 FindMinDistanceFromMagnetMap()

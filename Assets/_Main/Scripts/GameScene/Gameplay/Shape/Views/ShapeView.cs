@@ -12,10 +12,14 @@ namespace _Main.Scripts
 		[SerializeField] private Rigidbody shapeRigidbody;
 		[SerializeField] private MeshRenderView meshRenderView;
 		[SerializeField] private MeshRenderer meshRenderer;
+		[SerializeField] private MeshFilter shadowMeshFilter;
+		[SerializeField] private Transform shadowTransform;
 		
 		[SerializeField] [ReadOnly] private Entity _entity;
 		
 		public MeshFilter MeshFilter => meshFilter;
+		public MeshFilter ShadowMeshFilter => shadowMeshFilter;
+		public Transform ShadowTransform => shadowTransform;
 		public Rigidbody ShapeRigidbody => shapeRigidbody;
 
 		public void Init(Entity entity, Material meshRendererMaterial, bool renderLines = true)
@@ -28,6 +32,7 @@ namespace _Main.Scripts
 		public override void OnResetItem()
 		{
 			_entity = null;
+			ShadowMeshFilter.mesh = null;
 		}
 
 		public void SetupTransformProperties(Transform parent, Vector3 position, Vector3 size)

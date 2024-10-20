@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ShapeDragAndDropConfig
   m_EditorClassIdentifier: 
   MinOverlapCount: 0
-  MinOverlapDistance: 1.5
+  MaxOverlapDistance: 5

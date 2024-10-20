@@ -91,6 +91,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
             
             ShapeView patternView = _pool.Get();
             patternView.Init(patternEntity, _renderConfig.PatternMaterial);
+            shapeSignal.Position.z = 1f;
             patternView.SetupTransformProperties(shapeSignal.Parent, shapeSignal.Position, shapeSignal.Size);
             patternView.MeshFilter.sharedMesh = mesh;
             
