@@ -106,7 +106,6 @@ namespace _Main.Scripts
 
 		private void TryDropShape()
 		{
-			if (!_dragging || !_draggedShapeEntity.Has<ShapeInSelectorComponent>())
 			if (!_dragging)
 			{
 				return;
@@ -116,6 +115,11 @@ namespace _Main.Scripts
 			shapeView.transform.position = _magnet ? _newPosition : shapeView.transform.position;
 			shapeView.ShadowTransform.gameObject.SetActive(false);
 
+			if (_magnet)
+			{
+				_draggedShapeEntity.AddComponent<ShapeOnPatternSignal>();
+			}
+			
 			if (!_draggedShapeEntity.Has<ShapeInSelectorComponent>())
 			{
 				return;
@@ -123,6 +127,7 @@ namespace _Main.Scripts
 			
 			if (_magnet)
 			{
+				_draggedShapeEntity.TryAddComponent<ShapeOnPatternMarker>();
 				_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
 				if (_shapeSelectorFilter.TryGetFirstEntity(out var shapeSelectorEntity))
 				{
