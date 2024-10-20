@@ -81,6 +81,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
             try
             {
                 triangulation = new Triangulation2D(polygon, _patternDrawingConfig.Angle);
+                triangulation.SortVerticesClockwise();
             }
             catch (Exception)
             {
