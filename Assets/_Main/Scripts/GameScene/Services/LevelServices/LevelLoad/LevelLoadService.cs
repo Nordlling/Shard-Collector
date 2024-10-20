@@ -2,7 +2,7 @@ using App.Scripts.Scenes.Game.Configs.Pool;
 using Main.Scripts.Infrastructure.Services.GameGrid.Loader;
 using Main.Scripts.Infrastructure.Services.GameGrid.Parser;
 
-namespace _Main.Scripts.Spawn.Services
+namespace _Main.Scripts.GameScene.Services
 {
     public class LevelLoadService : ILevelLoadService
     {

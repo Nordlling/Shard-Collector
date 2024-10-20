@@ -1,7 +1,7 @@
 using _Main.Scripts.Gameplay.GameBoard;
 using _Main.Scripts.GameScene.MonoInstallers;
+using _Main.Scripts.GameScene.Services;
 using _Main.Scripts.Spawn;
-using _Main.Scripts.Spawn.Services;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Services;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Systems;
 using Scellecs.Morpeh;
@@ -14,16 +14,16 @@ namespace _Main.Scripts.GameScene
     {
         private readonly IWorldRunner _worldRunner;
         private readonly ISystemGroupContainer _systemGroupContainer;
-        private readonly ILevelLoadService _levelLoadService;
+        private readonly ICurrentLevelService _currentLevelService;
         private readonly GameBoardContent _gameBoardContent;
         private readonly GameBoardInitializer _gameBoardInitializer;
 
         public GameSceneStarter(IWorldRunner worldRunner, ISystemGroupContainer systemGroupContainer, 
-            ILevelLoadService levelLoadService, GameBoardContent gameBoardContent, GameBoardInitializer gameBoardInitializer)
+            ICurrentLevelService currentLevelService, GameBoardContent gameBoardContent, GameBoardInitializer gameBoardInitializer)
         {
             _worldRunner = worldRunner;
             _systemGroupContainer = systemGroupContainer;
-            _levelLoadService = levelLoadService;
+            _currentLevelService = currentLevelService;
             _gameBoardContent = gameBoardContent;
             _gameBoardInitializer = gameBoardInitializer;
         }
@@ -38,7 +38,7 @@ namespace _Main.Scripts.GameScene
             var patternEntity = _worldRunner.CreateEntity();
             patternEntity.SetComponent(new CreatePatternSignal
             {
-                Points = _levelLoadService.GetDefaultLevel().Points
+                Points = _currentLevelService.GetCurrentLevel().Points
             });
             patternEntity.SetComponent(new ShapeSpawnSignal
             {

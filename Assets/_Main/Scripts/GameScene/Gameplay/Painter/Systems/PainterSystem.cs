@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using _Main.Scripts.Gameplay.GameBoard;
 using _Main.Scripts.Gameplay.Painter;
 using _Main.Scripts.GameScene.MonoInstallers;
+using _Main.Scripts.GameScene.Services;
 using _Main.Scripts.Pattern;
 using _Main.Scripts.Spawn;
-using _Main.Scripts.Spawn.Services;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
 
@@ -20,7 +20,7 @@ namespace _Main.Scripts
 		private readonly Camera _mainCamera;
 		private readonly PatternDrawingConfig _patternDrawingConfig;
 		private readonly PainterView _painterView;
-		private readonly ILevelLoadService _levelLoadService;
+		private readonly ICurrentLevelService _currentLevelService;
 		private readonly GameBoardContent _gameBoardContent;
 
 		private bool _dragging;
@@ -30,12 +30,12 @@ namespace _Main.Scripts
 		public World World { get; set; }
 
 		public PainterSystem(Camera mainCamera, PatternDrawingConfig patternDrawingConfig, 
-			PainterView painterView, ILevelLoadService levelLoadService, GameBoardContent gameBoardContent)
+			PainterView painterView, ICurrentLevelService currentLevelService, GameBoardContent gameBoardContent)
 		{
 			_mainCamera = mainCamera;
 			_patternDrawingConfig = patternDrawingConfig;
 			_painterView = painterView;
-			_levelLoadService = levelLoadService;
+			_currentLevelService = currentLevelService;
 			_gameBoardContent = gameBoardContent;
 		}
 
@@ -69,7 +69,7 @@ namespace _Main.Scripts
 			}
 			else if (Input.GetKeyUp(KeyCode.F))
 			{
-				_points = _levelLoadService.GetDefaultLevel().Points;
+				_points = _currentLevelService.GetCurrentLevel().Points;
 				CreatePattern();
 			}
 
@@ -127,9 +127,9 @@ namespace _Main.Scripts
 				}
 				else
 				{
-					Vector3 direction = UnityEngine.Random.insideUnitSphere.normalized;
+					Vector3 direction = Random.insideUnitSphere.normalized;
 					direction.z = 0f;
-					shapeComponent.ShapeView.ShapeRigidbody.AddForce(direction * UnityEngine.Random.Range(50f, 100f));
+					shapeComponent.ShapeView.ShapeRigidbody.AddForce(direction * Random.Range(50f, 100f));
 				}
 			}
 		}

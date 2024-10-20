@@ -1,4 +1,4 @@
-using _Main.Scripts.Spawn.Services;
+using _Main.Scripts.GameScene.Services;
 using App.Scripts.Scenes.Game.Configs.Pool;
 using UnityEngine;
 using Zenject;
@@ -12,6 +12,7 @@ namespace _Main.Scripts.GameScene.MonoInstallers
         public override void InstallBindings()
         {
             Container.Bind<ILevelLoadService>().To<LevelLoadService>().AsSingle().WithArguments(levelConfig);
+            Container.Bind<ICurrentLevelService>().To<CurrentLevelService>().AsSingle();
         }
         
     }

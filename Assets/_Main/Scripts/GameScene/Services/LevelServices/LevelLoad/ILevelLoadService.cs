@@ -1,5 +1,5 @@
 
-namespace _Main.Scripts.Spawn.Services
+namespace _Main.Scripts.GameScene.Services
 {
     public interface ILevelLoadService
     {
