@@ -2,7 +2,6 @@
 using Scellecs.Morpeh;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts 
 {
@@ -33,6 +32,7 @@ namespace _Main.Scripts
 		{
 			_entity = null;
 			ShadowMeshFilter.mesh = null;
+			Paths.Clear(); // for test view
 		}
 
 		public void SetupTransformProperties(Transform parent, Vector3 position, Vector3 size)
@@ -41,7 +41,45 @@ namespace _Main.Scripts
 			transform.localPosition = position;
 			transform.localScale = size;
 		}
-		
+
+		// for test view
+		[SerializeField] private bool show = true;
+		public System.Collections.Generic.List<Clipper2Lib.PathD> Paths = new();
+
+		private void OnDrawGizmos()
+		{
+			if (!show)
+			{
+				return;
+			}
+			
+			if (_entity?.Has<ShapeComponent>() ?? false)
+			{
+				Gizmos.color = Color.red;
+				var offsets = _entity.GetComponent<ShapeComponent>().ExternalPointOffsets;
+				int offsetsCount = offsets.Count;
+				var position = transform.position;
+
+				for (int i = 0; i < offsetsCount; i++)
+				{
+					int nextIndex = (i + 1) % offsetsCount;
+					Gizmos.DrawLine(position + offsets[i], position + offsets[nextIndex]);
+				}
+			}
+
+			Gizmos.color = Color.yellow;
+			foreach (var path in Paths)
+			{
+				int count = path.Count;
+				for (int i = 0; i < count; i++)
+				{
+					int nextIndex = (i + 1) % count;
+					Gizmos.DrawLine(new Vector3((float)path[i].x, (float)path[i].y, 0f),
+						new Vector3((float)path[nextIndex].x, (float)path[nextIndex].y, 0f));
+				}
+			}
+		}
+
 	}
 }
 

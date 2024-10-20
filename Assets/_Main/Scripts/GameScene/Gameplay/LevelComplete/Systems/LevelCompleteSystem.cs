@@ -120,26 +120,29 @@ namespace _Main.Scripts
             foreach (var entity in shapeFilter)
             {
                 var shapeComponent = entity.GetComponent<ShapeComponent>();
+                var pathsForTestView = new List<PathD>();  // for test view
                 
                 if (combineByTriangles)
                 {
-                    CombineByTriangles(clipper, paths, shapeComponent, scaleFactor);
+                    CombineByTriangles(clipper, paths, shapeComponent, scaleFactor, pathsForTestView);
                 }
                 else
                 {
-                    CombineByExternalPoints(clipper, paths, shapeComponent, scaleFactor);
+                    CombineByExternalPoints(clipper, paths, shapeComponent, scaleFactor, pathsForTestView);
                 }
 
+                shapeComponent.ShapeView.Paths = pathsForTestView; // for test view
             }
 
             clipper.Execute(ClipType.Union, fillRule, paths);
             
+            Object.FindObjectOfType<ShapeUnionViewer>().ShapeSolution = paths; // for test view
 
             double totalArea = Clipper.Area(paths) / (scaleFactor * scaleFactor);
             return totalArea;
         }
 
-        private void CombineByTriangles(ClipperD clipper, PathsD paths, ShapeComponent shapeComponent, double scaleFactor)
+        private void CombineByTriangles(ClipperD clipper, PathsD paths, ShapeComponent shapeComponent, double scaleFactor, List<PathD> pathsForTestView)
         {
             var shapePosition = shapeComponent.ShapeView.transform.position;
             foreach (var triangle in shapeComponent.Triangles)
@@ -149,10 +152,12 @@ namespace _Main.Scripts
                 paths[0].Add(CreatePoint(shapePosition, triangle.b.Coordinate, scaleFactor));
                 paths[0].Add(CreatePoint(shapePosition, triangle.c.Coordinate, scaleFactor));
                 clipper.AddSubject(paths);
+                
+                pathsForTestView.Add(new PathD(paths[0])); // for test view
             }
         }
 
-        private void CombineByExternalPoints(ClipperD clipper, PathsD paths, ShapeComponent shapeComponent, double scaleFactor)
+        private void CombineByExternalPoints(ClipperD clipper, PathsD paths, ShapeComponent shapeComponent, double scaleFactor, List<PathD> pathsForTestView)
         {
             var shapePosition = shapeComponent.ShapeView.transform.position;
             paths[0].Clear();
@@ -161,6 +166,8 @@ namespace _Main.Scripts
                 paths[0].Add(CreatePoint(shapePosition, offset, scaleFactor));
             }
             clipper.AddSubject(paths);
+                
+            pathsForTestView.Add(new PathD(paths[0])); // for test view
         }
 
         private PointD CreatePoint(Vector3 shapePosition, Vector2 point, double scaleFactor)
