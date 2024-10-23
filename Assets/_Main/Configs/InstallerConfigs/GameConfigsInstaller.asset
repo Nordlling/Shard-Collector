@@ -16,3 +16,5 @@ MonoBehaviour:
   shapeDragAndDropConfig: {fileID: 11400000, guid: a030d6d7abfff463a803bd345317ce47, type: 2}
   renderConfig: {fileID: 11400000, guid: bb0fdffa504104c9dbbedacb75eea236, type: 2}
   shapeSelectorConfig: {fileID: 11400000, guid: ee3fa6bcb6fc1436ca95ea93a995fcca, type: 2}
+  generateConfig: {fileID: 11400000, guid: 4e1cb41ad31b945e88e6aea17b9f79b9, type: 2}
+  levelCompleteConfig: {fileID: 11400000, guid: 89f523ee0de5947708f916e1b503c5a0, type: 2}
