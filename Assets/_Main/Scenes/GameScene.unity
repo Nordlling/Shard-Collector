@@ -658,7 +658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 9e862ed6bbed84022885bfd92ae983d0, type: 2}
-  poolParentContainer: {fileID: 7908731755303795829}
+  poolContainer: {fileID: 7908731755303795829}
 --- !u!1 &971053610
 GameObject:
   m_ObjectHideFlags: 0
