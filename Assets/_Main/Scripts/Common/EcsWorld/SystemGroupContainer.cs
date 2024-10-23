@@ -8,7 +8,6 @@ namespace App.Scripts.Modules.EcsWorld.Infrastructure.Systems
 		private readonly IEnumerable<IInitializer> _initializers;
 		private readonly IEnumerable<ISystem> _systems;
 
-		[Inject]
 		public SystemGroupContainer(List<IInitializer> initializers, List<ISystem> systems)
 		{
 			_initializers = initializers;

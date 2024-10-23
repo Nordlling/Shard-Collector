@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using _Main.Scripts.GameScene;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
 

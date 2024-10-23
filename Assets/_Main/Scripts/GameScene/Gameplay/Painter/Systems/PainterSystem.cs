@@ -14,7 +14,6 @@ namespace _Main.Scripts
 	public class PainterSystem : ISystem
 	{
 		private Filter _shapeFilter;
-		private Filter _patternFilter;
 		private Filter _shapeSelectorFilter;
 
 		private readonly Camera _mainCamera;
@@ -45,12 +44,6 @@ namespace _Main.Scripts
 			
 			_shapeFilter = World.Filter
 				.With<ShapeComponent>()
-				.Without<PatternMarker>()
-				.Build();
-			
-			_patternFilter = World.Filter
-				.With<ShapeComponent>()
-				.With<PatternMarker>()
 				.Build();
 			
 			_shapeSelectorFilter = World.Filter
@@ -69,13 +62,8 @@ namespace _Main.Scripts
 			}
 			else if (Input.GetKeyUp(KeyCode.F))
 			{
-				_points = _currentLevelService.GetCurrentLevel().Points;
+				_points = new(_currentLevelService.GetCurrentLevel().Points);
 				CreatePattern();
-			}
-
-			if (Input.GetKeyDown(KeyCode.Space))
-			{
-				SwitchMoveAllShapes();
 			}
 
 			if (_dragging) {
@@ -95,11 +83,6 @@ namespace _Main.Scripts
 				entity.AddComponent<ShapeDestroySignal>();
 			}
 			
-			foreach (var entity in _patternFilter)
-			{
-				entity.AddComponent<ShapeDestroySignal>();
-			}
-			
 			Entity patternEntity = World.CreateEntity();
 			patternEntity.SetComponent(new CreatePatternSignal { Points = _points });
 			patternEntity.SetComponent(new ShapeSpawnSignal
@@ -113,27 +96,6 @@ namespace _Main.Scripts
 				shapeSelectorEntity.AddComponent<AllShapesInSelectorSignal>();
 			}
 		}
-
-		private void SwitchMoveAllShapes()
-		{
-			_moveSwitcher = !_moveSwitcher;
-			foreach (var shapeEntity in _shapeFilter)
-			{
-				var shapeComponent = shapeEntity.GetComponent<ShapeComponent>();
-				if (_moveSwitcher)
-				{
-					shapeComponent.ShapeView.ShapeRigidbody.velocity = Vector3.zero;
-					shapeComponent.ShapeView.ShapeRigidbody.angularVelocity = Vector3.zero;
-				}
-				else
-				{
-					Vector3 direction = Random.insideUnitSphere.normalized;
-					direction.z = 0f;
-					shapeComponent.ShapeView.ShapeRigidbody.AddForce(direction * Random.Range(50f, 100f));
-				}
-			}
-		}
-
 		
 		public void Dispose()
 		{

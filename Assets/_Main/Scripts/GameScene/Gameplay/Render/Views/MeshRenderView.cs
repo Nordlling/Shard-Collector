@@ -23,7 +23,7 @@ namespace _Main.Scripts
         
         private void OnRenderObject()
         {
-            if (_entity == null)
+            if (_entity.IsNullOrDisposed())
             {
                 return;
             }

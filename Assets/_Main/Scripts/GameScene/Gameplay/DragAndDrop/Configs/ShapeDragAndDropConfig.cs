@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Main.Scripts
+namespace _Main.Scripts.GameScene
 {
     [CreateAssetMenu(menuName = "Configs/ShapeDragAndDrop", fileName = "ShapeDragAndDropConfig")]
     public class ShapeDragAndDropConfig : ScriptableObject

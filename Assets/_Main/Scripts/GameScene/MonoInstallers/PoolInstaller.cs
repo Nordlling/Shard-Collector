@@ -9,11 +9,11 @@ namespace _Main.Scripts.GameScene.MonoInstallers
     public class PoolInstaller : MonoInstaller
     {
         [SerializeField] private GamePoolPrefabsConfig config;
-        [SerializeField] private MonoPoolParentContainer poolParentContainer;
+        [SerializeField] private MonoPoolParentContainer poolContainer;
         
         public override void InstallBindings()
         {
-            Container.BindMonoPool<ShapeView>(config.shapePoolData, poolParentContainer);
+            Container.BindMonoPool<ShapeView>(config.shapePoolData, poolContainer);
         }
     }
 }
