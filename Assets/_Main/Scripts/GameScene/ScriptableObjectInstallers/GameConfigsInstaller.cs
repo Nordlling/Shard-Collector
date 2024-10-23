@@ -12,6 +12,7 @@ namespace _Main.Scripts.GameScene.ScriptableObjectInstallers
         [SerializeField] private RenderConfig renderConfig;
         [SerializeField] private ShapeSelectorConfig shapeSelectorConfig;
         [SerializeField] private GenerateConfig generateConfig;
+        [SerializeField] private LevelCompleteConfig levelCompleteConfig;
 
         public override void InstallBindings()
         {
@@ -20,6 +21,7 @@ namespace _Main.Scripts.GameScene.ScriptableObjectInstallers
             Container.Bind<RenderConfig>().FromInstance(renderConfig).AsSingle();
             Container.Bind<ShapeSelectorConfig>().FromInstance(shapeSelectorConfig).AsSingle();
             Container.Bind<GenerateConfig>().FromInstance(generateConfig).AsSingle();
+            Container.Bind<LevelCompleteConfig>().FromInstance(levelCompleteConfig).AsSingle();
         }
     }
 }
