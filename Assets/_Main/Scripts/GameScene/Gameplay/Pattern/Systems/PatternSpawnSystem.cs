@@ -16,7 +16,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
     public class PatternSpawnSystem : ISystem
     {
         private readonly IPool<ShapeView> _pool;
-        private readonly PatternDrawingConfig _patternDrawingConfig;
+        private readonly GenerateConfig _generateConfig;
         private readonly RenderConfig _renderConfig;
         private readonly IRandomService _randomService;
         private readonly GameBoardContent _gameBoardContent;
@@ -25,11 +25,11 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
         public World World { get; set; }
 
-        public PatternSpawnSystem(IPool<ShapeView> pool, PatternDrawingConfig patternDrawingConfig, 
+        public PatternSpawnSystem(IPool<ShapeView> pool, GenerateConfig generateConfig, 
             RenderConfig renderConfig, IRandomService randomService, GameBoardContent gameBoardContent)
         {
             _pool = pool;
-            _patternDrawingConfig = patternDrawingConfig;
+            _generateConfig = generateConfig;
             _renderConfig = renderConfig;
             _randomService = randomService;
             _gameBoardContent = gameBoardContent;
@@ -68,7 +68,6 @@ namespace _Main.Scripts.Gameplay.GameBoard
                 return null;
             }
 
-            points = Utils2D.Constrain(points, _patternDrawingConfig.Threshold);
             Polygon2D polygon = Polygon2D.Contour(points.ToArray());
             Vertex2D[] vertices = polygon.Vertices;
 
@@ -80,7 +79,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
             Triangulation2D triangulation;
             try
             {
-                triangulation = new Triangulation2D(polygon, _patternDrawingConfig.Angle);
+                triangulation = new Triangulation2D(polygon, _generateConfig.Angle);
                 triangulation.SortVerticesClockwise();
             }
             catch (Exception)
@@ -115,20 +114,22 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
         private void CreateShapesByPattern(Triangle2D[] triangles)
         {
-            List<Triangle2D> activeTriangles = new();
-            List<Triangle2D> allTriangles = new(triangles);
-            List<List<Triangle2D>> shapes = new();
+            var activeTriangles = new List<Triangle2D>();
+            var allTriangles = new List<Triangle2D>(triangles);
+            var shapes = new List<List<Triangle2D>>();
 			
-            int shapesCount = _randomService.Range(4, 11);
+            int shapesCount = _randomService.Range(_generateConfig.MinShapesCount, _generateConfig.MaxShapesCount);
             shapesCount = Math.Min(shapesCount, allTriangles.Count);
             int allTrianglesCount = allTriangles.Count;
 
             while (allTriangles.Count != 0)
             {
                 List<Triangle2D> usedTriangles = new();
+                
                 int firstTriangleIndex = _randomService.Range(0, allTriangles.Count);
                 Triangle2D firstTriangle = allTriangles[firstTriangleIndex];
                 activeTriangles.Add(firstTriangle);
+                
                 int maxCount = _randomService.Range(1, allTrianglesCount / shapesCount);
                 maxCount = Math.Min(maxCount, allTriangles.Count);
 				
@@ -182,12 +183,10 @@ namespace _Main.Scripts.Gameplay.GameBoard
                     continue;
                 }
 
-                adjacentCount = Math.Min(adjacentCount, adjacentTriangles.Count);
-
                 adjacentTriangles.ShuffleRandom(_randomService);
-				
-                newActiveTriangles.AddRange(adjacentTriangles.GetRange(0, adjacentCount));
 
+                adjacentCount = Math.Min(adjacentCount, adjacentTriangles.Count);
+                newActiveTriangles.AddRange(adjacentTriangles.GetRange(0, adjacentCount));
                 leftCount -= adjacentCount;
             }
 			
