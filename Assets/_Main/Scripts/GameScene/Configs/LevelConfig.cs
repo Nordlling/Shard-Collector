@@ -1,10 +1,13 @@
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace App.Scripts.Scenes.Game.Configs.Pool
 {
     [CreateAssetMenu(menuName = "Configs/GameScene/LevelConfig", fileName = "LevelConfig")]
-    public class LevelConfig : ScriptableObject
+    public class LevelConfig : SerializedScriptableObject
     {
         public string DefaultLevelPath;
+        public Dictionary<int, string> LevelsMap;
     }
 }

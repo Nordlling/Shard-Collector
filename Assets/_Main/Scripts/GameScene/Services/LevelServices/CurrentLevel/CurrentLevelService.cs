@@ -3,17 +3,27 @@ namespace _Main.Scripts.GameScene.Services
     public class CurrentLevelService : ICurrentLevelService
     {
         private readonly ILevelLoadService _levelLoadService;
-        private readonly LevelInfo _currentLevel;
+        private LevelInfo _currentLevel;
+        private LevelInfo _defaultLevel;
+        private int _levelId;
 
         public CurrentLevelService(ILevelLoadService levelLoadService)
         {
             _levelLoadService = levelLoadService;
-            _currentLevel = _levelLoadService.GetDefaultLevel();
+            _defaultLevel = _levelLoadService.GetDefaultLevel();
+            _levelId = -1;
         }
 
-        public LevelInfo GetCurrentLevel()
+        public LevelInfo GetCurrentLevel(bool canReturnDefault = true)
         {
-            return _currentLevel;
+            return canReturnDefault ? _currentLevel ?? _defaultLevel : _currentLevel;
         }
+
+        public void LevelUp()
+        {
+            _levelId++;
+            _currentLevel = _levelLoadService.GetLevelByLevelId(_levelId);
+        }
+        
     }
 }

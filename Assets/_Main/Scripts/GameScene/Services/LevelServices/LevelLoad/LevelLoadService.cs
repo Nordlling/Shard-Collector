@@ -19,9 +19,25 @@ namespace _Main.Scripts.GameScene.Services
 
         public LevelInfo GetDefaultLevel()
         {
-            string levelData = _simpleLoader.LoadTextFile(_levelConfig.DefaultLevelPath);
+            return GetLevelByPath(_levelConfig.DefaultLevelPath);
+        }
+
+        public LevelInfo GetLevelByLevelId(int levelId)
+        {
+            if (!_levelConfig.LevelsMap.TryGetValue(levelId, out var levelPath))
+            {
+                return null;
+            }
+
+            return GetLevelByPath(levelPath);
+        }
+        
+        private LevelInfo GetLevelByPath(string path)
+        {
+            string levelData = _simpleLoader.LoadTextFile(path);
             LevelInfo levelInfo = _simpleParser?.ParseText<LevelInfo>(levelData);
             return levelInfo;
         }
+        
     }
 }

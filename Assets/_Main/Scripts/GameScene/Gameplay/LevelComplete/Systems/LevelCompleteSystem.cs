@@ -81,6 +81,8 @@ namespace _Main.Scripts
                 Debug.LogError("No found patternEntity");
                 return;
             }
+            
+            _currentLevelService.LevelUp();
 
             var patternArea = CalculateArea(patternEntity.GetComponent<ShapeComponent>().ExternalPointOffsets);
             var placedShapesArea = CalculateUnionArea(_shapeOnPatternMarkerFilter);
