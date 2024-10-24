@@ -1,16 +1,22 @@
+using System;
 using System.Collections.Generic;
 using _Main.Scripts.Gameplay.GameBoard;
+using _Main.Scripts.GameScene.Dialogs;
 using _Main.Scripts.GameScene.Services;
+using App.Scripts.Modules.Dialogs.Interfaces;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
 using UnityEngine;
 using Clipper2Lib;
+using Object = UnityEngine.Object;
 
 namespace _Main.Scripts
 {
     public class LevelCompleteSystem : ISystem
     {
         private readonly ICurrentLevelService _currentLevelService;
+        private readonly IDialogsService _dialogsService;
+
         private Filter _createPatternSignal;
         private Filter _shapeInSelectorFilter;
         private Filter _shapeOnPatternSignalFilter;
@@ -21,9 +27,10 @@ namespace _Main.Scripts
 
         public World World { get; set; }
 
-        public LevelCompleteSystem(ICurrentLevelService currentLevelService)
+        public LevelCompleteSystem(ICurrentLevelService currentLevelService, IDialogsService dialogsService)
         {
             _currentLevelService = currentLevelService;
+            _dialogsService = dialogsService;
         }
 
         public void OnAwake()
@@ -35,6 +42,7 @@ namespace _Main.Scripts
             _shapeInSelectorFilter = World.Filter
                 .With<ShapeComponent>()
                 .With<ShapeInSelectorComponent>()
+                .Without<ShapeDestroySignal>()
                 .Build();
             
             _shapeOnPatternSignalFilter = World.Filter
@@ -87,10 +95,14 @@ namespace _Main.Scripts
             var patternArea = CalculateArea(patternEntity.GetComponent<ShapeComponent>().ExternalPointOffsets);
             var placedShapesArea = CalculateUnionArea(_shapeOnPatternMarkerFilter);
             
-            Debug.Log("1________________GAME IS OVER___________________1");
+            var percent = Math.Ceiling(placedShapesArea / patternArea * 100f);
+            
+            var dialog = _dialogsService.GetDialog<LevelCompleteDialog>();
+            dialog.Setup((int)percent);
+            dialog.ShowDialog(null);
+            
             Debug.Log($"Left moves = {_leftMoves}; Shapes in selector = {_shapeInSelectorFilter.GetLengthSlow()}");
-            Debug.Log($"Pattern Area = {patternArea}; Shapes Area = {placedShapesArea}; Percent = {placedShapesArea / patternArea * 100f:F2}%");
-            Debug.Log("2________________GAME IS OVER___________________2");
+            Debug.Log($"Shapes Area = {placedShapesArea}; Pattern Area = {patternArea}; Percent = {placedShapesArea / patternArea * 100f:F2}%");
         }
         
         private double CalculateArea(List<Vector3> vertices, FillRule fillRule = FillRule.NonZero)
