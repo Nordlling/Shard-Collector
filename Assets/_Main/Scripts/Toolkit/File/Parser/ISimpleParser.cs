@@ -1,7 +1,8 @@
-namespace Main.Scripts.Infrastructure.Services.GameGrid.Parser
+namespace _Main.Scripts.Toolkit.File
 {
     public interface ISimpleParser
     {
-        T ParseText<T>(string json) where T : class;
+        T ParseFromText<T>(string json) where T : class;
+        string ParseToText<T>(T value) where T : class;
     }
 }

@@ -1,6 +1,5 @@
+using _Main.Scripts.Toolkit.File;
 using App.Scripts.Scenes.Game.Configs.Pool;
-using Main.Scripts.Infrastructure.Services.GameGrid.Loader;
-using Main.Scripts.Infrastructure.Services.GameGrid.Parser;
 
 namespace _Main.Scripts.GameScene.Services
 {
@@ -35,7 +34,7 @@ namespace _Main.Scripts.GameScene.Services
         private LevelInfo GetLevelByPath(string path)
         {
             string levelData = _simpleLoader.LoadTextFile(path);
-            LevelInfo levelInfo = _simpleParser?.ParseText<LevelInfo>(levelData);
+            LevelInfo levelInfo = _simpleParser.ParseFromText<LevelInfo>(levelData);
             return levelInfo;
         }
         

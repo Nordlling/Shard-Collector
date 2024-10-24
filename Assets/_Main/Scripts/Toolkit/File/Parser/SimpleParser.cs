@@ -2,11 +2,11 @@ using System;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Main.Scripts.Infrastructure.Services.GameGrid.Parser
+namespace _Main.Scripts.Toolkit.File
 {
     public class SimpleParser : ISimpleParser
     {
-        public T ParseText<T>(string json) where T : class
+        public T ParseFromText<T>(string json) where T : class
         {
             try
             {
@@ -15,10 +15,22 @@ namespace Main.Scripts.Infrastructure.Services.GameGrid.Parser
             catch (Exception e)
             {
                 Debug.LogWarning($"Error parsing JSON: {e.Message}");
+                return null;
+            }
+        }
+
+        public string ParseToText<T>(T value) where T : class
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(value);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Error parsing Object: {e.Message}");
             }
 
             return null;
         }
-        
     }
 }

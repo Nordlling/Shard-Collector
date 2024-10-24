@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Main.Scripts.Infrastructure.Services.GameGrid.Loader
+namespace _Main.Scripts.Toolkit.File
 {
     public class SimpleLoader : ISimpleLoader
     {

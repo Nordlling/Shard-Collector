@@ -12,7 +12,7 @@ namespace _Main.Scripts.GameScene.MonoInstallers
         public override void InstallBindings()
         {
             Container.Bind<ILevelLoadService>().To<LevelLoadService>().AsSingle().WithArguments(levelConfig);
-            Container.Bind<ICurrentLevelService>().To<CurrentLevelService>().AsSingle();
+            Container.Bind<ICurrentLevelService>().To<CurrentLevelService>().AsSingle().WithArguments(levelConfig);
         }
         
     }
