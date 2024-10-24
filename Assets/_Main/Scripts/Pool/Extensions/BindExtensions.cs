@@ -1,5 +1,8 @@
+using System;
 using App.Scripts.Modules.Pool.Container;
 using App.Scripts.Modules.Pool.Data;
+using App.Scripts.Modules.Pool.Interfaces.Container;
+using App.Scripts.Modules.Pool.Interfaces.Data;
 using App.Scripts.Modules.Pool.Interfaces.Items;
 using App.Scripts.Modules.Pool.Interfaces.Pool;
 using App.Scripts.Modules.Pool.Pools;
@@ -33,6 +36,13 @@ namespace App.Scripts.Modules.Pool.Extensions
 		{
 			return container.Bind<IPool<TContractItem>>().To<MonoPool<TItem>>().AsSingle()
 				.WithArguments(poolData, poolParentContainer);
+		}
+		
+		public static InstantiateCallbackConditionCopyNonLazyBinder BindMonoTypesPool<TItem>(this DiContainer container, IPoolDataProvider<Type, IMonoPoolData> poolDataProvider, MonoPoolParentContainer poolParentContainer)
+			where TItem : Component, IPoolItem
+		{
+			return container.Bind<ITypePool<TItem>>().To<MonoTypePool<TItem>>().AsSingle()
+				.WithArguments(poolDataProvider, poolParentContainer);
 		}
 	}
 }
