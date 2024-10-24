@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98180e1707674e7f9e63333a312aa45f, type: 3}
+  m_Name: DialogsPoolPrefabsConfig
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 3823805582689621206, guid: ac6da3edd522d43c39dd83b2e377ccf1, type: 3}
+    - {fileID: 3823805582689621206, guid: e7d44b8aaf9354416b8fae43d9a9037f, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: dialogsPoolData
+      Entry: 7
+      Data: 0|App.Scripts.Modules.Pool.Data.MonoTypesPoolDataProvider, Assembly-CSharp
+    - Name: dataContainers
+      Entry: 7
+      Data: 1|System.Collections.Generic.List`1[[App.Scripts.Modules.Pool.Data.MonoTypesPoolDataContainer,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 2|App.Scripts.Modules.Pool.Data.MonoTypesPoolDataContainer, Assembly-CSharp
+    - Name: poolData
+      Entry: 7
+      Data: 3|App.Scripts.Modules.Pool.Data.MonoTypesPoolData, Assembly-CSharp
+    - Name: type
+      Entry: 7
+      Data: 4|System.RuntimeType, mscorlib
+    - Name: 
+      Entry: 1
+      Data: _Main.Scripts.GameScene.Dialogs.LevelCompleteDialog, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: initialSize
+      Entry: 3
+      Data: 0
+    - Name: prefab
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 5|App.Scripts.Modules.Pool.Data.MonoTypesPoolDataContainer, Assembly-CSharp
+    - Name: poolData
+      Entry: 7
+      Data: 6|App.Scripts.Modules.Pool.Data.MonoTypesPoolData, Assembly-CSharp
+    - Name: type
+      Entry: 7
+      Data: 7|System.RuntimeType, mscorlib
+    - Name: 
+      Entry: 1
+      Data: _Main.Scripts.GameScene.Dialogs.SettingsDialog, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: initialSize
+      Entry: 3
+      Data: 0
+    - Name: prefab
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
