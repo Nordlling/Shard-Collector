@@ -65,4 +65,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+  UseDefaultLevel: 0
   DefaultLevelPath: Levels/Level1
+  FirstLevelIndex: 0
