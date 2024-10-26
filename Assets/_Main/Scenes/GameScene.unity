@@ -1015,6 +1015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 814989684}
+  eventSystem: {fileID: 1919930327}
 --- !u!4 &1051908480
 Transform:
   m_ObjectHideFlags: 0
