@@ -7,8 +7,6 @@ using App.Scripts.Modules.Dialogs.Interfaces;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
 using UnityEngine;
-using Clipper2Lib;
-using Object = UnityEngine.Object;
 
 namespace _Main.Scripts
 {
@@ -16,6 +14,10 @@ namespace _Main.Scripts
     {
         private readonly ICurrentLevelService _currentLevelService;
         private readonly IDialogsService _dialogsService;
+        private readonly PolygonAreaCalculator _polygonAreaCalculator;
+        
+        private readonly List<Vector3> _worldPositions = new();
+        private readonly List<List<Vector3>> _shapesOfExternalOffsets = new();
 
         private Filter _createPatternSignal;
         private Filter _shapeInSelectorFilter;
@@ -27,10 +29,11 @@ namespace _Main.Scripts
 
         public World World { get; set; }
 
-        public LevelCompleteSystem(ICurrentLevelService currentLevelService, IDialogsService dialogsService)
+        public LevelCompleteSystem(ICurrentLevelService currentLevelService, IDialogsService dialogsService, PolygonAreaCalculator polygonAreaCalculator)
         {
             _currentLevelService = currentLevelService;
             _dialogsService = dialogsService;
+            _polygonAreaCalculator = polygonAreaCalculator;
         }
 
         public void OnAwake()
@@ -92,103 +95,38 @@ namespace _Main.Scripts
             
             _currentLevelService.LevelUp();
 
-            var patternArea = CalculateArea(patternEntity.GetComponent<ShapeComponent>().ExternalPointOffsets);
-            var placedShapesArea = CalculateUnionArea(_shapeOnPatternMarkerFilter);
+            FillShapesInfo();
+
+            var patternArea = _polygonAreaCalculator.CalculateArea(patternEntity.GetComponent<ShapeComponent>().ExternalPointOffsets);
+            var placedShapesArea = _polygonAreaCalculator.CalculateUnionArea(_worldPositions, _shapesOfExternalOffsets);
             
             var percent = Math.Ceiling(placedShapesArea / patternArea * 100f);
-            
-            var dialog = _dialogsService.GetDialog<LevelCompleteDialog>();
-            dialog.Setup((int)percent);
-            _dialogsService.ShowDialog(dialog);
-            
+           
+            OpenLevelCompleteDialog(percent);
+
             Debug.Log($"Left moves = {_leftMoves}; Shapes in selector = {_shapeInSelectorFilter.GetLengthSlow()}");
             Debug.Log($"Shapes Area = {placedShapesArea}; Pattern Area = {patternArea}; Percent = {placedShapesArea / patternArea * 100f:F2}%");
         }
-        
-        private double CalculateArea(List<Vector3> vertices, FillRule fillRule = FillRule.NonZero)
+
+        private void FillShapesInfo()
         {
-            ClipperD clipper = new ClipperD();
-            
-            PathD path = new PathD();
-            foreach (var vertex in vertices)
-            {
-                path.Add(new PointD(vertex.x, vertex.y));
-            }
-
-            clipper.AddSubject(path);
-
-            var solution = new PathsD();
-            clipper.Execute(ClipType.Union, fillRule, solution);
-
-            double totalArea = Clipper.Area(solution);
-            return totalArea;
-        }
-
-        private double CalculateUnionArea(Filter shapeFilter, FillRule fillRule = FillRule.NonZero, bool combineByTriangles = true)
-        {
-            const double scaleFactor = 1;
-            
-            ClipperD clipper = new ClipperD();
-            PathsD paths = new PathsD { new PathD() };
-
-            foreach (var entity in shapeFilter)
+            _worldPositions.Clear();
+            _shapesOfExternalOffsets.Clear();
+            foreach (var entity in _shapeOnPatternMarkerFilter)
             {
                 var shapeComponent = entity.GetComponent<ShapeComponent>();
-                var pathsForTestView = new List<PathD>();  // for test view
-                
-                if (combineByTriangles)
-                {
-                    CombineByTriangles(clipper, paths, shapeComponent, scaleFactor, pathsForTestView);
-                }
-                else
-                {
-                    CombineByExternalPoints(clipper, paths, shapeComponent, scaleFactor, pathsForTestView);
-                }
-
-                shapeComponent.ShapeView.Paths = pathsForTestView; // for test view
-            }
-
-            clipper.Execute(ClipType.Union, fillRule, paths);
-            
-            Object.FindObjectOfType<ShapeUnionViewer>().ShapeSolution = paths; // for test view
-
-            double totalArea = Clipper.Area(paths) / (scaleFactor * scaleFactor);
-            return totalArea;
-        }
-
-        private void CombineByTriangles(ClipperD clipper, PathsD paths, ShapeComponent shapeComponent, double scaleFactor, List<PathD> pathsForTestView)
-        {
-            var shapePosition = shapeComponent.ShapeView.transform.position;
-            foreach (var triangle in shapeComponent.Triangles)
-            {
-                paths[0].Clear();
-                paths[0].Add(CreatePoint(shapePosition, triangle.a.Coordinate, scaleFactor));
-                paths[0].Add(CreatePoint(shapePosition, triangle.b.Coordinate, scaleFactor));
-                paths[0].Add(CreatePoint(shapePosition, triangle.c.Coordinate, scaleFactor));
-                clipper.AddSubject(paths);
-                
-                pathsForTestView.Add(new PathD(paths[0])); // for test view
+                _worldPositions.Add(shapeComponent.ShapeView.transform.position);
+                _shapesOfExternalOffsets.Add(shapeComponent.ExternalPointOffsets);
             }
         }
 
-        private void CombineByExternalPoints(ClipperD clipper, PathsD paths, ShapeComponent shapeComponent, double scaleFactor, List<PathD> pathsForTestView)
+        private void OpenLevelCompleteDialog(double percent)
         {
-            var shapePosition = shapeComponent.ShapeView.transform.position;
-            paths[0].Clear();
-            foreach (var offset in shapeComponent.ExternalPointOffsets)
-            {
-                paths[0].Add(CreatePoint(shapePosition, offset, scaleFactor));
-            }
-            clipper.AddSubject(paths);
-                
-            pathsForTestView.Add(new PathD(paths[0])); // for test view
+            var dialog = _dialogsService.GetDialog<LevelCompleteDialog>();
+            dialog.Setup((int)percent);
+            _dialogsService.ShowDialog(dialog);
         }
 
-        private PointD CreatePoint(Vector3 shapePosition, Vector2 point, double scaleFactor)
-        {
-            return new PointD((shapePosition.x + point.x) * scaleFactor, (shapePosition.y + point.y) * scaleFactor);
-        }
-        
         public void Dispose()
         {
         }
