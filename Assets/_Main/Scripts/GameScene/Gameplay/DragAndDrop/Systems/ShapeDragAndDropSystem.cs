@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using _Main.Scripts.Common.InputSystem;
 using _Main.Scripts.GameScene;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
@@ -8,7 +9,7 @@ namespace _Main.Scripts
 {
 	public class ShapeDragAndDropSystem : ISystem
 	{
-		private readonly Camera _camera;
+		private readonly IInputService _inputService;
 		private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
 		
 		private Filter _shapesFilter;
@@ -24,9 +25,9 @@ namespace _Main.Scripts
 
 		public World World { get; set; }
 
-		public ShapeDragAndDropSystem(Camera mainCamera, ShapeDragAndDropConfig shapeDragAndDropConfig)
+		public ShapeDragAndDropSystem(IInputService inputService, ShapeDragAndDropConfig shapeDragAndDropConfig)
 		{
-			_camera = mainCamera;
+			_inputService = inputService;
 			_shapeDragAndDropConfig = shapeDragAndDropConfig;
 		}
 
@@ -50,36 +51,42 @@ namespace _Main.Scripts
 
 		public void OnUpdate(float deltaTime)
 		{
-			if (Input.GetMouseButtonDown(0))
+			CheckInput();
+			TryDragShape();
+		}
+
+		private void CheckInput()
+		{
+			if (!_inputService.InputActivity)
+			{
+				return;
+			}
+			
+			if (_inputService.OnTouchedDown())
 			{
 				TryTakeShape();
 			}
-			else if (Input.GetMouseButtonUp(0))
+			else if (_inputService.OnTouchedUp())
 			{
 				TryDropShape();
 				_dragging = false;
 				_draggedShapeEntity = null;
 			}
-
-			TryDragShape();
 		}
 
 		private void TryTakeShape()
 		{
-			Vector3 screen = Input.mousePosition;
-			screen.z = Mathf.Abs(_camera.transform.position.z - 0f);
-			Vector3 mousePosition = _camera.ScreenToWorldPoint(screen);
-			Vector2 mousePosition2D = new Vector2(mousePosition.x, mousePosition.y);
+			Vector3 touchPosition = _inputService.GetTouchPositionInWorld();
 
 			foreach (var entity in _shapesFilter)
 			{
 				var shapeComponent = entity.GetComponent<ShapeComponent>();
 				var shapeView = shapeComponent.ShapeView;
-				if (mousePosition2D.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
+				if (touchPosition.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
 				{
 					_draggedShapeEntity = entity;
 					_dragging = true;
-					_centerOffset = shapeComponent.ShapeView.transform.position - mousePosition;
+					_centerOffset = shapeComponent.ShapeView.transform.position - touchPosition;
 					if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
 					{
 						_draggedShapeEntity.AddComponent<ShapeFromSelectorSignal>();
@@ -96,11 +103,9 @@ namespace _Main.Scripts
 				return;
 			}
 			
-			Vector3 screen = Input.mousePosition;
-			screen.z = Mathf.Abs(_camera.transform.position.z - 0f);
-			Vector3 mousePosition = _camera.ScreenToWorldPoint(screen);
+			Vector3 touchPosition = _inputService.GetTouchPositionInWorld();
 			Transform shapeTransform = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView.transform;
-			Vector2 newShapePosition = new Vector3(mousePosition.x, mousePosition.y, shapeTransform.position.z);
+			Vector2 newShapePosition = new Vector3(touchPosition.x, touchPosition.y, shapeTransform.position.z);
 			shapeTransform.position = newShapePosition + _centerOffset;
 			CheckMagnet();
 		}

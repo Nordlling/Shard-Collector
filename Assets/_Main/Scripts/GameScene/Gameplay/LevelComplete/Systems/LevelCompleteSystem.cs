@@ -99,7 +99,7 @@ namespace _Main.Scripts
             
             var dialog = _dialogsService.GetDialog<LevelCompleteDialog>();
             dialog.Setup((int)percent);
-            dialog.ShowDialog(null);
+            _dialogsService.ShowDialog(dialog);
             
             Debug.Log($"Left moves = {_leftMoves}; Shapes in selector = {_shapeInSelectorFilter.GetLengthSlow()}");
             Debug.Log($"Shapes Area = {placedShapesArea}; Pattern Area = {patternArea}; Percent = {placedShapesArea / patternArea * 100f:F2}%");

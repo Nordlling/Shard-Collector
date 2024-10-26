@@ -4,7 +4,7 @@ namespace _Main.Scripts
 {
     public static class VectorExtensions
     {
-        public static bool IsInsideMesh(this Vector2 point, Mesh mesh, Transform meshTransform)
+        public static bool IsInsideMesh(this Vector3 point, Mesh mesh, Transform meshTransform)
         {
             Vector3[] vertices = mesh.vertices;
             int[] triangles = mesh.triangles;

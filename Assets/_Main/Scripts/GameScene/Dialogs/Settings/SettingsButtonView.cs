@@ -30,7 +30,7 @@ namespace _Main.Scripts.GameScene.Dialogs
         private void OpenSettings()
         {
             var dialog = _dialogsService.GetDialog<SettingsDialog>();
-            dialog.ShowDialog(null);
+            _dialogsService.ShowDialog(dialog);
         }
         
     }

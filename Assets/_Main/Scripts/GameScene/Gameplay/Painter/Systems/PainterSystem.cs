@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using _Main.Scripts.Common.InputSystem;
 using _Main.Scripts.Gameplay.GameBoard;
 using _Main.Scripts.Gameplay.Painter;
 using _Main.Scripts.GameScene.MonoInstallers;
@@ -11,12 +12,13 @@ using Scellecs.Morpeh;
 
 namespace _Main.Scripts 
 {
+	// for test
 	public class PainterSystem : ISystem
 	{
 		private Filter _shapeFilter;
 		private Filter _shapeSelectorFilter;
 
-		private readonly Camera _mainCamera;
+		private readonly IInputService _inputService;
 		private readonly PatternDrawingConfig _patternDrawingConfig;
 		private readonly PainterView _painterView;
 		private readonly ICurrentLevelService _currentLevelService;
@@ -28,10 +30,10 @@ namespace _Main.Scripts
 
 		public World World { get; set; }
 
-		public PainterSystem(Camera mainCamera, PatternDrawingConfig patternDrawingConfig, 
+		public PainterSystem(IInputService inputService, PatternDrawingConfig patternDrawingConfig, 
 			PainterView painterView, ICurrentLevelService currentLevelService, GameBoardContent gameBoardContent)
 		{
-			_mainCamera = mainCamera;
+			_inputService = inputService;
 			_patternDrawingConfig = patternDrawingConfig;
 			_painterView = painterView;
 			_currentLevelService = currentLevelService;
@@ -53,25 +55,23 @@ namespace _Main.Scripts
 
 		public void OnUpdate(float deltaTime)
 		{
-			if (Input.GetMouseButtonDown(1)) {
-				_dragging = true;
-				_points.Clear();
-			} else if(Input.GetMouseButtonUp(1)) {
-				_dragging = false;
-				CreatePattern();
-			}
-			else if (Input.GetKeyUp(KeyCode.F))
+			if (_inputService.InputActivity)
 			{
-				_points = new(_currentLevelService.GetCurrentLevel().Points);
-				CreatePattern();
+				if (Input.GetMouseButtonDown(1)) {
+					_dragging = true;
+					_points.Clear();
+				} else if(Input.GetMouseButtonUp(1)) {
+					_dragging = false;
+					CreatePattern();
+				}
 			}
 
-			if (_dragging) {
-				var inputPositionOnScreen = Input.mousePosition;
-				var inputPositionInWorld = _mainCamera.ScreenToWorldPoint(inputPositionOnScreen);
-				if (_points.Count <= 0 || Vector2.Distance(inputPositionInWorld, _points[^1]) > _patternDrawingConfig.Threshold) 
+			if (_dragging)
+			{
+				var touchPosition = _inputService.GetTouchPositionInWorld();
+				if (_points.Count <= 0 || Vector2.Distance(touchPosition, _points[^1]) > _patternDrawingConfig.Threshold) 
 				{
-					_points.Add(inputPositionInWorld);
+					_points.Add(touchPosition);
 				}
 			}
 		}

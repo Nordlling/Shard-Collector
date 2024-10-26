@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Main.Scripts.Common.InputSystem;
 using App.Scripts.Modules.Dialogs.Interfaces;
 using App.Scripts.Modules.Pool.Interfaces.Pool;
 using DG.Tweening;
@@ -15,11 +16,13 @@ namespace App.Scripts.Modules.Dialogs.Services
 
 		private readonly ITypePool<PoolableDialog> _pool;
 		private readonly Transform _dialogsContainer;
+		private readonly IInputService _inputService;
 
-		public DialogsService(ITypePool<PoolableDialog> pool, Transform dialogsContainer)
+		public DialogsService(ITypePool<PoolableDialog> pool, Transform dialogsContainer, IInputService inputService)
 		{
 			_pool = pool;
 			_dialogsContainer = dialogsContainer;
+			_inputService = inputService;
 		}
 
 		public T GetDialog<T>() where T : PoolableDialog
@@ -46,7 +49,7 @@ namespace App.Scripts.Modules.Dialogs.Services
 
 		public Tween ShowDialog(PoolableDialog dialog, Action onComplete = null)
 		{
-		
+			_inputService.DisableInput();
 			return dialog.ShowDialog(() =>
 			{
 				onComplete?.Invoke();
@@ -82,6 +85,7 @@ namespace App.Scripts.Modules.Dialogs.Services
 			return dialog.CloseDialog(() =>
 			{
 				onComplete?.Invoke();
+				_inputService.EnableInput();
 			});
 		}
 		
