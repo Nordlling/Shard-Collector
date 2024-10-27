@@ -12,6 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e6c554e3a1e478c9cae386de7ad29f5, type: 3}
   m_Name: PatternDrawingConfig
   m_EditorClassIdentifier: 
-  Angle: 20
   Threshold: 2
-  Divide: 1

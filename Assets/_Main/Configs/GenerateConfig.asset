@@ -12,6 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72969a3e32b44c808763b9fd04ce8e80, type: 3}
   m_Name: GenerateConfig
   m_EditorClassIdentifier: 
-  Angle: 20
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Angle: 40
   MinShapesCount: 4
   MaxShapesCount: 11
+  MinShapeAreaFraction: 0.05
+  MaxShapeAreaFraction: 0.2
