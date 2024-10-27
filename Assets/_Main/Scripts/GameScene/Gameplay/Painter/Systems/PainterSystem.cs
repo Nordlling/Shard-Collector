@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using _Main.Scripts.Common.InputSystem;
 using _Main.Scripts.Gameplay.GameBoard;
 using _Main.Scripts.Gameplay.Painter;
@@ -26,6 +27,7 @@ namespace _Main.Scripts
 
 		private bool _dragging;
 		private List<Vector2> _points = new();
+		private string _pointsText; // for debug
 		private bool _moveSwitcher;
 
 		public World World { get; set; }
@@ -63,6 +65,7 @@ namespace _Main.Scripts
 				} else if(Input.GetMouseButtonUp(1)) {
 					_dragging = false;
 					CreatePattern();
+					_pointsText = string.Join(",", _points.Select(el => $"\"x\":{el.x}, \"y\":{el.y}").ToList());
 				}
 			}
 
