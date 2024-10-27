@@ -45,9 +45,9 @@ namespace _Main.Scripts
             for (int i = 0; i < shapeComponent.Triangles.Length; i++)
             {
                 Triangle2D triangle = shapeComponent.Triangles[i];
-                GL.Vertex(triangle.s0.a.Coordinate); GL.Vertex(triangle.s0.b.Coordinate);
-                GL.Vertex(triangle.s1.a.Coordinate); GL.Vertex(triangle.s1.b.Coordinate);
-                GL.Vertex(triangle.s2.a.Coordinate); GL.Vertex(triangle.s2.b.Coordinate);
+                GL.Vertex(triangle.a.Coordinate - triangle.Offset); GL.Vertex(triangle.b.Coordinate - triangle.Offset);
+                GL.Vertex(triangle.b.Coordinate - triangle.Offset); GL.Vertex(triangle.c.Coordinate - triangle.Offset);
+                GL.Vertex(triangle.c.Coordinate - triangle.Offset); GL.Vertex(triangle.a.Coordinate - triangle.Offset);
             }
 
             GL.End();

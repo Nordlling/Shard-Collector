@@ -72,6 +72,7 @@ namespace _Main.Scripts
 				triangle.a = new Vertex2D(triangle.a.Coordinate + offset);
 				triangle.b = new Vertex2D(triangle.b.Coordinate + offset);
 				triangle.c = new Vertex2D(triangle.c.Coordinate + offset);
+				triangle.Offset = offset;
 			}
 		}
 
