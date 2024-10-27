@@ -14,6 +14,7 @@ namespace _Main.Scripts.GameScene.MonoInstallers
         public override void InstallBindings()
         {
             Container.Bind<PolygonAreaCalculator>().AsSingle();
+            Container.Bind<ShapeGrouper>().AsSingle();
             
             Container.Bind<IWorldRunner>().To<WorldRunner>().AsSingle();
             Container.Bind<ISystemGroupContainer>().To<SystemGroupContainer>().AsSingle();
