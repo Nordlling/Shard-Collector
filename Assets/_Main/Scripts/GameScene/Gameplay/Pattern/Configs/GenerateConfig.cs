@@ -1,3 +1,5 @@
+using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace _Main.Scripts.Pattern
@@ -6,7 +8,19 @@ namespace _Main.Scripts.Pattern
     public class GenerateConfig : ScriptableObject
     {
         public float Angle = 20f;
-        public int MinShapesCount = 4;
-        public int MaxShapesCount = 11;
+        [Range(0f, 1f)] [OnValueChanged(nameof(OnValueChanged))] public float MinShapeAreaFraction = 0.05f;
+        [Range(0f, 1f)] [OnValueChanged(nameof(OnValueChanged))] public float MaxShapeAreaFraction = 0.15f;
+        
+        
+        private void OnValueChanged()
+        {
+            if (MinShapeAreaFraction > MaxShapeAreaFraction)
+            {
+                MinShapeAreaFraction = MaxShapeAreaFraction;
+            }
+
+            MinShapeAreaFraction = (float) Math.Round(MinShapeAreaFraction, 2);
+            MaxShapeAreaFraction = (float) Math.Round(MaxShapeAreaFraction, 2);
+        }
     }
 }
