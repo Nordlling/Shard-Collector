@@ -1,3 +1,4 @@
+using System;
 using mattatz.Triangulation2DSystem;
 using UnityEngine;
 
@@ -32,13 +33,13 @@ namespace _Main.Scripts
             return count;
         }
 
-        public static float GetArea(this Triangle2D triangle)
+        public static double GetArea(this Triangle2D triangle)
         {
-            float x1 = triangle.a.Coordinate.x, y1 = triangle.a.Coordinate.y;
-            float x2 = triangle.b.Coordinate.x, y2 = triangle.b.Coordinate.y;
-            float x3 = triangle.c.Coordinate.x, y3 = triangle.c.Coordinate.y;
+            double x1 = triangle.a.Coordinate.x, y1 = triangle.a.Coordinate.y;
+            double x2 = triangle.b.Coordinate.x, y2 = triangle.b.Coordinate.y;
+            double x3 = triangle.c.Coordinate.x, y3 = triangle.c.Coordinate.y;
 
-            float area = Mathf.Abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2f;
+            double area = Math.Abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2f;
             return area;
         }
 

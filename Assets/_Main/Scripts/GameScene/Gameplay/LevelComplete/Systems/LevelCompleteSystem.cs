@@ -97,7 +97,7 @@ namespace _Main.Scripts
 
             FillShapesInfo();
 
-            var patternArea = _polygonAreaCalculator.CalculateArea(patternEntity.GetComponent<ShapeComponent>().ExternalPointOffsets);
+            var patternArea = patternEntity.GetComponent<ShapeComponent>().Area;
             var placedShapesArea = _polygonAreaCalculator.CalculateUnionArea(_worldPositions, _shapesOfExternalOffsets);
             
             var percent = Math.Ceiling(placedShapesArea / patternArea * 100f);

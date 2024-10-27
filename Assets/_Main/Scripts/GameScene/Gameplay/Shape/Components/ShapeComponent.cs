@@ -10,9 +10,10 @@ namespace _Main.Scripts
 	public struct ShapeComponent : IComponent
 	{
 		public ShapeView ShapeView;
-		public Triangle2D[] Triangles;
+		public double Area;
 		public Vector3[] Points;
 		public List<Vector3> ExternalPointOffsets;
+		public Triangle2D[] Triangles;
 	}
 }
 

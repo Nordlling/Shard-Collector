@@ -20,19 +20,22 @@ namespace _Main.Scripts.Gameplay.GameBoard
         private readonly RenderConfig _renderConfig;
         private readonly IRandomService _randomService;
         private readonly GameBoardContent _gameBoardContent;
+        private readonly PolygonAreaCalculator _polygonAreaCalculator;
 
         private Filter _createPatternShapesFilter;
 
         public World World { get; set; }
 
         public PatternSpawnSystem(IPool<ShapeView> pool, GenerateConfig generateConfig, 
-            RenderConfig renderConfig, IRandomService randomService, GameBoardContent gameBoardContent)
+            RenderConfig renderConfig, IRandomService randomService, GameBoardContent gameBoardContent, 
+            PolygonAreaCalculator polygonAreaCalculator)
         {
             _pool = pool;
             _generateConfig = generateConfig;
             _renderConfig = renderConfig;
             _randomService = randomService;
             _gameBoardContent = gameBoardContent;
+            _polygonAreaCalculator = polygonAreaCalculator;
         }
 
         public void OnAwake()
@@ -50,14 +53,13 @@ namespace _Main.Scripts.Gameplay.GameBoard
                 return;
             }
             
-            Entity patterEntity = TryCreatePattern(patternEntity);
-            if (patterEntity != null)
+            if (TryCreatePattern(patternEntity))
             {
-                CreateShapesByPattern(patterEntity.GetComponent<ShapeComponent>().Triangles);
+                CreateShapesByPattern(patternEntity.GetComponent<ShapeComponent>().Triangles);
             }
         }
 
-        private Entity TryCreatePattern(Entity patternEntity)
+        private bool TryCreatePattern(Entity patternEntity)
         {
             ref var patternSignal = ref patternEntity.GetComponent<CreatePatternSignal>();
             ref var shapeSignal = ref patternEntity.GetComponent<ShapeSpawnSignal>();
@@ -65,7 +67,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
             var points = patternSignal.Points;
             if (points.Count < 2)
             {
-                return null;
+                return false;
             }
 
             Polygon2D polygon = Polygon2D.Contour(points.ToArray());
@@ -73,7 +75,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
             if (vertices.Length < 3)
             {
-                return null;
+                return false;
             }
 
             Triangulation2D triangulation;
@@ -84,7 +86,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
 
             Mesh mesh = triangulation.Build();
@@ -96,20 +98,21 @@ namespace _Main.Scripts.Gameplay.GameBoard
             patternView.MeshFilter.sharedMesh = mesh;
             
             List<Vector3> externalPoints = ShapeUtils.FindExternalPoints(triangulation.Triangles, patternView.transform.position);
+            double area = _polygonAreaCalculator.CalculateArea(externalPoints);
             
             ShapeComponent patternShapeComponent = new ShapeComponent
             {
-                Points = mesh.vertices,
-                Triangles = triangulation.Triangles,
                 ShapeView = patternView,
-                ExternalPointOffsets = externalPoints
+                Area = area,
+                Points = mesh.vertices,
+                ExternalPointOffsets = externalPoints,
+                Triangles = triangulation.Triangles
             };
             
             patternEntity.SetComponent(patternShapeComponent);
             patternEntity.AddComponent<PatternMarker>();
             // patternEntity.AddComponent<ShapeRenderMarker>();
-            
-            return patternEntity;
+            return true;
         }
 
         private void CreateShapesByPattern(Triangle2D[] triangles)
@@ -152,13 +155,13 @@ namespace _Main.Scripts.Gameplay.GameBoard
             }
         }
         
-        private void CreateShape(List<Triangle2D> allTriangles, List<Triangle2D> usedTriangles, List<Triangle2D> activeTriangles, int leftCount)
+        private void CreateShape(List<Triangle2D> allTriangles, List<Triangle2D> usedTriangles, List<Triangle2D> activeTriangles, int trianglesCountLeft)
         {
             List<Triangle2D> newActiveTriangles = new();
 			
             usedTriangles.AddRange(activeTriangles);
 			
-            if (leftCount == 0 || activeTriangles.Count == 0)
+            if (trianglesCountLeft == 0 || activeTriangles.Count == 0)
             {
                 activeTriangles.Clear();
                 return;
@@ -168,16 +171,13 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
             foreach (Triangle2D activeTriangle in activeTriangles)
             {
-                if (leftCount <= 0)
+                if (trianglesCountLeft <= 0)
                 {
                     break;
                 }
 				
                 List<Triangle2D> adjacentTriangles = FindAdjacentTriangles(allTriangles, activeTriangle);
 
-                adjacentTriangles = adjacentTriangles.Where(el => !usedTriangles.Contains(el)).ToList();
-                int adjacentCount = Math.Min(leftCount, _randomService.Range(1, 3));
-				
                 if (adjacentTriangles.Count == 0)
                 {
                     continue;
@@ -185,15 +185,17 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
                 adjacentTriangles.ShuffleRandom(_randomService);
 
-                adjacentCount = Math.Min(adjacentCount, adjacentTriangles.Count);
+                int maxAdjacentCount = Math.Min(adjacentTriangles.Count, trianglesCountLeft);
+                int adjacentCount = _randomService.Range(1, maxAdjacentCount + 1);
+
                 newActiveTriangles.AddRange(adjacentTriangles.GetRange(0, adjacentCount));
-                leftCount -= adjacentCount;
+                trianglesCountLeft -= adjacentCount;
             }
 			
             activeTriangles.Clear();
             activeTriangles.AddRange(newActiveTriangles);
 
-            CreateShape(allTriangles, usedTriangles, activeTriangles, leftCount);
+            CreateShape(allTriangles, usedTriangles, activeTriangles, trianglesCountLeft);
         }
         
         private List<Triangle2D> FindAdjacentTriangles(List<Triangle2D> allTriangles, Triangle2D selectedTriangle)
