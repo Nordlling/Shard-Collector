@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using _Main.Scripts;
 
 namespace mattatz.Triangulation2DSystem {
 
@@ -11,6 +12,8 @@ namespace mattatz.Triangulation2DSystem {
 
 		public Vertex2D a, b, c;
 		public Segment2D s0, s1, s2;
+		public Vector2 Offset;
+		public double Area;
 		private Circle2D circum;
 
 		public Triangle2D (Segment2D s0, Segment2D s1, Segment2D s2) {
@@ -20,6 +23,7 @@ namespace mattatz.Triangulation2DSystem {
 			this.a = s0.a;
 			this.b = s0.b;
 			this.c = (s2.b == this.a || s2.b == this.b) ? s2.a : s2.b;
+			Area = this.GetArea();
 		}
 
 		public bool HasPoint (Vertex2D p) {
