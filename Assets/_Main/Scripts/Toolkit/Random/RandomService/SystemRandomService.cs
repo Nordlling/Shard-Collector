@@ -8,6 +8,7 @@ namespace App.Scripts.Modules.Utils.RandomService
 		public SystemRandomService(int seed)
 		{
 			_random = new Random(seed);
+			UnityEngine.Debug.Log("Seed = " + seed);
 		}
 
 		public void UpdateSeed(int seed)
