@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using _Main.Scripts.GameScene;
 using _Main.Scripts.GameScene.MonoInstallers;
 using _Main.Scripts.Pattern;
 using _Main.Scripts.Spawn;
@@ -22,6 +22,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
         private readonly GameBoardContent _gameBoardContent;
         private readonly PolygonAreaCalculator _polygonAreaCalculator;
         private readonly ShapeGrouper _shapeGrouper;
+        private readonly ILevelPlayStatusService _levelPlayStatusService;
 
         private Filter _createPatternShapesFilter;
 
@@ -29,7 +30,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
 
         public PatternSpawnSystem(IPool<ShapeView> pool, GenerateConfig generateConfig, 
             RenderConfig renderConfig, IRandomService randomService, GameBoardContent gameBoardContent, 
-            PolygonAreaCalculator polygonAreaCalculator, ShapeGrouper shapeGrouper)
+            PolygonAreaCalculator polygonAreaCalculator, ShapeGrouper shapeGrouper, ILevelPlayStatusService levelPlayStatusService)
         {
             _pool = pool;
             _generateConfig = generateConfig;
@@ -38,6 +39,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
             _gameBoardContent = gameBoardContent;
             _polygonAreaCalculator = polygonAreaCalculator;
             _shapeGrouper = shapeGrouper;
+            _levelPlayStatusService = levelPlayStatusService;
         }
 
         public void OnAwake()
@@ -124,6 +126,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
         private void CreateShapesByPattern(Triangle2D[] patternTriangles, double minWeight, double maxWeight)
         {
             var shapes = _shapeGrouper.GroupTrianglesIntoShapes(patternTriangles, minWeight, maxWeight);
+            _levelPlayStatusService.InitNewLevel(shapes.Count);
 
             foreach (var shapeTriangles in shapes)
             {

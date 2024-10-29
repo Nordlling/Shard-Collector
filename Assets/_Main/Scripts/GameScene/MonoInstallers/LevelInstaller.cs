@@ -5,7 +5,7 @@ using Zenject;
 
 namespace _Main.Scripts.GameScene.MonoInstallers
 {
-    public class LoadInstaller : MonoInstaller
+    public class LevelInstaller : MonoInstaller
     {
         [SerializeField] private LevelConfig levelConfig;
         
@@ -13,6 +13,7 @@ namespace _Main.Scripts.GameScene.MonoInstallers
         {
             Container.Bind<ILevelLoadService>().To<LevelLoadService>().AsSingle().WithArguments(levelConfig);
             Container.Bind<ICurrentLevelService>().To<CurrentLevelService>().AsSingle().WithArguments(levelConfig);
+            Container.Bind<ILevelPlayStatusService>().To<LevelPlayStatusService>().AsSingle();
         }
         
     }

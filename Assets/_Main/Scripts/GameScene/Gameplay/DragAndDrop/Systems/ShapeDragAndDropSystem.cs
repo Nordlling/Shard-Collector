@@ -1,34 +1,38 @@
 using UnityEngine;
 using System.Collections.Generic;
 using _Main.Scripts.Common.InputSystem;
-using _Main.Scripts.GameScene;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using Scellecs.Morpeh;
 
-namespace _Main.Scripts 
+namespace _Main.Scripts.GameScene
 {
 	public class ShapeDragAndDropSystem : ISystem
 	{
 		private readonly IInputService _inputService;
 		private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
-		
+		private readonly ILevelPlayStatusService _levelPlayStatusService;
+
 		private Filter _shapesFilter;
 		private Filter _patternFilter;
 		private Filter _shapeSelectorFilter;
 
+		private readonly Dictionary<Vector3, int> _magnetMap = new();
+		private Entity _draggedShapeEntity;
+		
+		private Vector2 _centerOffset;
+		private Vector2 _oldPosition;
+		private Vector2 _newPosition;
+		
 		private bool _dragging;
 		private bool _magnet;
-		private Entity _draggedShapeEntity;
-		private Vector2 _centerOffset;
-		private readonly Dictionary<Vector3, int> _magnetMap = new();
-		private Vector2 _newPosition;
 
 		public World World { get; set; }
 
-		public ShapeDragAndDropSystem(IInputService inputService, ShapeDragAndDropConfig shapeDragAndDropConfig)
+		public ShapeDragAndDropSystem(IInputService inputService, ShapeDragAndDropConfig shapeDragAndDropConfig, ILevelPlayStatusService levelPlayStatusService)
 		{
 			_inputService = inputService;
 			_shapeDragAndDropConfig = shapeDragAndDropConfig;
+			_levelPlayStatusService = levelPlayStatusService;
 		}
 
 		public void OnAwake()
@@ -85,6 +89,7 @@ namespace _Main.Scripts
 				if (touchPosition.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
 				{
 					_draggedShapeEntity = entity;
+					_oldPosition = shapeView.transform.position;
 					_dragging = true;
 					_centerOffset = shapeComponent.ShapeView.transform.position - touchPosition;
 					if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
@@ -118,31 +123,29 @@ namespace _Main.Scripts
 			}
 
 			var shapeView = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView;
-			shapeView.transform.position = _magnet ? _newPosition : shapeView.transform.position;
 			shapeView.ShadowTransform.gameObject.SetActive(false);
+			bool newShape = !_draggedShapeEntity.Has<ShapeOnPatternMarker>();
 
 			if (_magnet)
 			{
-				_draggedShapeEntity.AddComponent<ShapeOnPatternSignal>();
-			}
-			
-			if (!_draggedShapeEntity.Has<ShapeInSelectorComponent>())
-			{
-				return;
-			}
-			
-			if (_magnet)
-			{
-				_draggedShapeEntity.TryAddComponent<ShapeOnPatternMarker>();
-				_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
-				if (_shapeSelectorFilter.TryGetFirstEntity(out var shapeSelectorEntity))
+				shapeView.transform.position = _newPosition;
+				// _draggedShapeEntity.AddComponent<ShapeOnPatternSignal>();
+				
+				if (newShape)
 				{
-					shapeSelectorEntity.AddComponent<ShapeSelectorResortSignal>();
+					_draggedShapeEntity.AddComponent<ShapeOnPatternMarker>();
+					_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
+					_shapeSelectorFilter.First().AddComponent<ShapeSelectorResortSignal>();
 				}
+				_levelPlayStatusService.UseMove(newShape);
 			}
 			else
 			{
-				_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
+				shapeView.transform.position = _oldPosition;
+				if (newShape)
+				{
+					_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
+				}
 			}
 		}
 

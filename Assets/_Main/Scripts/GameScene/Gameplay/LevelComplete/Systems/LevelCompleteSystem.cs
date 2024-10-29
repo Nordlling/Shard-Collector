@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _Main.Scripts.Gameplay.GameBoard;
+using _Main.Scripts.GameScene;
 using _Main.Scripts.GameScene.Dialogs;
 using _Main.Scripts.GameScene.Services;
 using App.Scripts.Modules.Dialogs.Interfaces;
@@ -15,7 +16,8 @@ namespace _Main.Scripts
         private readonly ICurrentLevelService _currentLevelService;
         private readonly IDialogsService _dialogsService;
         private readonly PolygonAreaCalculator _polygonAreaCalculator;
-        
+        private readonly ILevelPlayStatusService _levelPlayStatusService;
+
         private readonly List<Vector3> _worldPositions = new();
         private readonly List<List<Vector3>> _shapesOfExternalOffsets = new();
 
@@ -24,16 +26,17 @@ namespace _Main.Scripts
         private Filter _shapeOnPatternSignalFilter;
         private Filter _shapeOnPatternMarkerFilter;
         private Filter _patternFilter;
-
-        private int _leftMoves;
+        private bool _canGameOver;
 
         public World World { get; set; }
 
-        public LevelCompleteSystem(ICurrentLevelService currentLevelService, IDialogsService dialogsService, PolygonAreaCalculator polygonAreaCalculator)
+        public LevelCompleteSystem(ICurrentLevelService currentLevelService, IDialogsService dialogsService, 
+            PolygonAreaCalculator polygonAreaCalculator, ILevelPlayStatusService levelPlayStatusService)
         {
             _currentLevelService = currentLevelService;
             _dialogsService = dialogsService;
             _polygonAreaCalculator = polygonAreaCalculator;
+            _levelPlayStatusService = levelPlayStatusService;
         }
 
         public void OnAwake()
@@ -66,22 +69,16 @@ namespace _Main.Scripts
 
         public void OnUpdate(float deltaTime)
         {
-            if (_createPatternSignal.TryGetFirstEntity(out _))
+            if (_levelPlayStatusService.LeftMoves > 0 && _levelPlayStatusService.FreeShapes > 0)
             {
-                _leftMoves = _shapeInSelectorFilter.GetLengthSlow() + _currentLevelService.GetCurrentLevel().ExtraMoves;
-            }
-            
-            if (!_shapeOnPatternSignalFilter.TryGetFirstEntity(out var signal))
-            {
+                _canGameOver = true;
                 return;
             }
             
-            _leftMoves--;
-            signal.RemoveComponent<ShapeOnPatternSignal>();
-            
-            if (_leftMoves <= 0 || _shapeInSelectorFilter.FirstOrDefault() == default)
+            if (_canGameOver && (_levelPlayStatusService.LeftMoves <= 0 || _levelPlayStatusService.FreeShapes <= 0))
             {
                 GameOver();
+                _canGameOver = false;
             }
         }
 
@@ -104,7 +101,7 @@ namespace _Main.Scripts
            
             OpenLevelCompleteDialog(percent);
 
-            Debug.Log($"Left moves = {_leftMoves}; Shapes in selector = {_shapeInSelectorFilter.GetLengthSlow()}");
+            Debug.Log($"Left moves = {_levelPlayStatusService.LeftMoves}; Shapes in selector = {_shapeInSelectorFilter.GetLengthSlow()}");
             Debug.Log($"Shapes Area = {placedShapesArea}; Pattern Area = {patternArea}; Percent = {placedShapesArea / patternArea * 100f:F2}%");
         }
 
