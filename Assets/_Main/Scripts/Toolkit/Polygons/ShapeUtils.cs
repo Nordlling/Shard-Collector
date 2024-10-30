@@ -90,6 +90,43 @@ namespace _Main.Scripts
 			return externalPoints;
 		}
 
+		public static bool ShapeInsidePolygon(Vector3 shapePosition, List<Vector3> shapeExternalOffsets, 
+			Vector3 polygonPosition, List<Vector3> polygonExternalOffsets)
+		{
+			foreach (var externalOffset in shapeExternalOffsets)
+			{
+				Vector3 externalPoint = shapePosition + externalOffset;
+				if (!PointInPolygon(externalPoint, polygonPosition, polygonExternalOffsets))
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
+
+		public static bool PointInPolygon(Vector3 point, Vector3 polygonPosition, List<Vector3> polygonExternalOffsets) 
+		{
+			bool result = false;
+			var length = polygonExternalOffsets.Count;
+			for(int i = 0, j = length - 1; i < length; j = i++)
+			{
+				var position = polygonPosition + polygonExternalOffsets[i];
+				var previousPosition = polygonPosition + polygonExternalOffsets[j];
+				
+				if (position == point)
+				{
+					return true;
+				}
+				if (((position.y >= point.y) != (previousPosition.y >= point.y)) && 
+				    (point.x < (previousPosition.x - position.x) * (point.y - position.y) / (previousPosition.y - position.y) + position.x)) 
+				{
+					result = !result;
+				}
+			}
+			return result;
+		}
+
 		private static void TryAddPoint(Vector3 shapeCenterPosition, Vector3 point, List<Vector3> externalPoints)
 		{
 			var externalOffset = point - shapeCenterPosition;

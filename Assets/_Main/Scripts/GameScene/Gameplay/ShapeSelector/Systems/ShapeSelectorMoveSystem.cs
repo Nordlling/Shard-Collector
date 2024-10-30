@@ -1,5 +1,7 @@
 using System;
+using _Main.Scripts.GameScene;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
+using DG.Tweening;
 using Scellecs.Morpeh;
 using UnityEngine;
 
@@ -7,11 +9,17 @@ namespace _Main.Scripts
 {
     public class ShapeSelectorMoveSystem : ISystem
     {
+        private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
         private Filter _shapeSelectorFilter;
         private Filter _shapesToSelectorFilter;
         private Filter _shapesFromSelectorFilter;
 
         public World World { get; set; }
+
+        public ShapeSelectorMoveSystem(ShapeDragAndDropConfig shapeDragAndDropConfig)
+        {
+            _shapeDragAndDropConfig = shapeDragAndDropConfig;
+        }
 
         public void OnAwake()
         {
@@ -53,17 +61,16 @@ namespace _Main.Scripts
                 float targetPositionX = shapeSelectorComponent.Rect.center.x;
                 var targetPosition = new Vector2(targetPositionX, targetPositionY);
 
-                var shapeTransform = shapeComponent.ShapeView.transform;
-                shapeTransform.position = targetPosition;
-
                 var bounds = shapeComponent.ShapeView.MeshFilter.mesh.bounds;
                 var maxSize = Math.Max(bounds.size.x, bounds.size.y);
-
                 var resultSize = Vector3.one * (shapeSelectorComponent.CellSize / maxSize);
-
                 resultSize *= 0.8f;
                 
-                shapeTransform.localScale = resultSize;
+                var shapeTransform = shapeComponent.ShapeView.transform;
+                shapeTransform.DOMove(targetPosition, _shapeDragAndDropConfig.ShapeMoveToSelectorDuration);
+                shapeTransform.DOScale(resultSize, _shapeDragAndDropConfig.ShapeScaleDuration);
+                // shapeTransform.position = targetPosition;
+                // shapeTransform.localScale = resultSize;
 
                 entity.RemoveComponent<ShapeToSelectorSignal>();
             }
@@ -71,7 +78,8 @@ namespace _Main.Scripts
             foreach (var entity in _shapesFromSelectorFilter)
             {
                 var shapeComponent = entity.GetComponent<ShapeComponent>();
-                shapeComponent.ShapeView.transform.localScale = new Vector3(1f, 1f, 1f);
+                shapeComponent.ShapeView.transform.DOScale(Vector3.one, 0.3f);
+                // shapeComponent.ShapeView.transform.localScale = new Vector3(1f, 1f, 1f);
                 entity.RemoveComponent<ShapeFromSelectorSignal>();
             }
         }

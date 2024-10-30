@@ -6,6 +6,12 @@ namespace _Main.Scripts.GameScene
     public class ShapeDragAndDropConfig : ScriptableObject
     {
         [Min(0)] public int MinOverlapCount;
-        [Range(0.2f, 5f)] public float MaxOverlapDistance = 1.5f;
+        [Min(0)] public float MaxOverlapDistance = 1.5f;
+        
+        [Header("Animation")] 
+        [Min(0)] public float ShadowMoveSpeed = 15f;
+        [Min(0)] public float ShapeMoveToPatternDuration = 0.2f;
+        [Min(0)] public float ShapeMoveToSelectorDuration = 0.3f;
+        [Min(0)] public float ShapeScaleDuration = 0.3f;
     }
 }

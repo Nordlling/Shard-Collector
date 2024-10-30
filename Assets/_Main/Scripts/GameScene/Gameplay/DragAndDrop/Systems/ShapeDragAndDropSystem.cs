@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using _Main.Scripts.Common.InputSystem;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
+using DG.Tweening;
 using Scellecs.Morpeh;
 
 namespace _Main.Scripts.GameScene
@@ -19,13 +20,15 @@ namespace _Main.Scripts.GameScene
 		private readonly Dictionary<Vector3, int> _magnetMap = new();
 		private Entity _draggedShapeEntity;
 		
+		private readonly Vector3 _maxVector = new(float.MaxValue, float.MaxValue, float.MaxValue);
+		
 		private Vector2 _centerOffset;
 		private Vector2 _oldPosition;
 		private Vector2 _newPosition;
 		
 		private bool _dragging;
 		private bool _magnet;
-
+		
 		public World World { get; set; }
 
 		public ShapeDragAndDropSystem(IInputService inputService, ShapeDragAndDropConfig shapeDragAndDropConfig, ILevelPlayStatusService levelPlayStatusService)
@@ -55,11 +58,11 @@ namespace _Main.Scripts.GameScene
 
 		public void OnUpdate(float deltaTime)
 		{
-			CheckInput();
-			TryDragShape();
+			CheckInput(deltaTime);
+			TryDragShape(deltaTime);
 		}
 
-		private void CheckInput()
+		private void CheckInput(float deltaTime)
 		{
 			if (!_inputService.InputActivity)
 			{
@@ -72,7 +75,7 @@ namespace _Main.Scripts.GameScene
 			}
 			else if (_inputService.OnTouchedUp())
 			{
-				TryDropShape();
+				TryDropShape(deltaTime);
 				_dragging = false;
 				_draggedShapeEntity = null;
 			}
@@ -101,7 +104,7 @@ namespace _Main.Scripts.GameScene
 			}
 		}
 
-		private void TryDragShape()
+		private void TryDragShape(float deltaTime)
 		{
 			if (!_dragging)
 			{
@@ -112,10 +115,10 @@ namespace _Main.Scripts.GameScene
 			Transform shapeTransform = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView.transform;
 			Vector2 newShapePosition = new Vector3(touchPosition.x, touchPosition.y, shapeTransform.position.z);
 			shapeTransform.position = newShapePosition + _centerOffset;
-			CheckMagnet();
+			CheckMagnet(deltaTime);
 		}
 
-		private void TryDropShape()
+		private void TryDropShape(float deltaTime)
 		{
 			if (!_dragging)
 			{
@@ -126,30 +129,35 @@ namespace _Main.Scripts.GameScene
 			shapeView.ShadowTransform.gameObject.SetActive(false);
 			bool newShape = !_draggedShapeEntity.Has<ShapeOnPatternMarker>();
 
-			if (_magnet)
+			if (!_magnet)
 			{
-				shapeView.transform.position = _newPosition;
-				// _draggedShapeEntity.AddComponent<ShapeOnPatternSignal>();
-				
-				if (newShape)
-				{
-					_draggedShapeEntity.AddComponent<ShapeOnPatternMarker>();
-					_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
-					_shapeSelectorFilter.First().AddComponent<ShapeSelectorResortSignal>();
-				}
-				_levelPlayStatusService.UseMove(newShape);
-			}
-			else
-			{
-				shapeView.transform.position = _oldPosition;
+				// shapeView.transform.position = _oldPosition;
 				if (newShape)
 				{
 					_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
+					return;
 				}
+				
+				shapeView.transform.DOMove(_oldPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration);
+				return;
+			}
+
+			shapeView.transform.DOMove(_newPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration).OnKill(() =>
+			{
+				_levelPlayStatusService.UseMove(newShape);
+			});
+			// shapeView.transform.position = _newPosition;
+			// _draggedShapeEntity.AddComponent<ShapeOnPatternSignal>();
+
+			if (newShape)
+			{
+				_draggedShapeEntity.AddComponent<ShapeOnPatternMarker>();
+				_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
+				_shapeSelectorFilter.First().AddComponent<ShapeSelectorResortSignal>();
 			}
 		}
 
-		private void CheckMagnet()
+		private void CheckMagnet(float deltaTime)
 		{
 			if (!_patternFilter.TryGetFirstEntity(out var patternEntity))
 			{
@@ -157,14 +165,39 @@ namespace _Main.Scripts.GameScene
 			}
 
 			_magnet = false;
-			_magnetMap.Clear();
 
 			var patternShapeComponent = patternEntity.GetComponent<ShapeComponent>();
 			var shapeComponent = _draggedShapeEntity.GetComponent<ShapeComponent>();
 			Vector3 shapePosition = shapeComponent.ShapeView.transform.position;
 			var shadowTransform = shapeComponent.ShapeView.ShadowTransform;
-			shadowTransform.gameObject.SetActive(false);
+			var patternView = patternShapeComponent.ShapeView;
 
+			FillMagnetMap(shapeComponent, shapePosition, patternShapeComponent);
+
+			Vector3 minDistance = FindMinDistanceFromMagnetMap(shapePosition, shapeComponent.ExternalPointOffsets,
+				patternView.transform.position, patternShapeComponent.ExternalPointOffsets);
+			_newPosition = shapePosition + minDistance;
+			
+			if (minDistance == _maxVector)
+			{
+				_magnet = false;
+				_newPosition = default;
+				Move(shadowTransform, shapePosition, _shapeDragAndDropConfig.ShadowMoveSpeed, deltaTime);
+				if (shadowTransform.position == shapePosition)
+				{
+					shadowTransform.gameObject.SetActive(false);
+				}
+				return;
+			}
+
+			_magnet = true;
+			shadowTransform.gameObject.SetActive(true);
+			Move(shadowTransform, _newPosition, _shapeDragAndDropConfig.ShadowMoveSpeed, deltaTime);
+		}
+
+		private void FillMagnetMap(ShapeComponent shapeComponent, Vector3 shapePosition, ShapeComponent patternShapeComponent)
+		{
+			_magnetMap.Clear();
 			foreach (Vector3 externalOffset in shapeComponent.ExternalPointOffsets)
 			{
 				Vector3 externalPoint = shapePosition + externalOffset;
@@ -180,82 +213,44 @@ namespace _Main.Scripts.GameScene
 					}
 				}
 			}
-			
-			Vector3 minDistance = FindMinDistanceFromMagnetMap();
-
-			_newPosition = shapePosition + minDistance;
-			
-			_magnet = minDistance != default;
-
-			if (!_magnet)
-			{
-				return;
-			}
-			
-			if (!ShapeInsidePattern(_newPosition, shapeComponent.ExternalPointOffsets, patternShapeComponent))
-			{
-				_magnet = false;
-				return;
-			}
-
-			shadowTransform.gameObject.SetActive(true);
-			shadowTransform.position = new Vector3(_newPosition.x, _newPosition.y, shadowTransform.position.z);
 		}
 
-		private Vector3 FindMinDistanceFromMagnetMap()
+		private Vector3 FindMinDistanceFromMagnetMap(Vector3 shapePosition, List<Vector3> shapeExternalOffsets, Vector3 patternPosition, List<Vector3> patternExternalOffsets)
 		{
-			Vector3 minDistance = default;
+			Vector3 minDistance = _maxVector;
 
 			foreach (var key in _magnetMap.Keys)
 			{
-				if (_magnetMap[key] < _shapeDragAndDropConfig.MinOverlapCount)
+				if (_magnetMap[key] < _shapeDragAndDropConfig.MinOverlapCount || key.magnitude >= minDistance.magnitude)
 				{
 					continue;
 				}
 
-				if (minDistance == default || key.magnitude < minDistance.magnitude)
+				var newPosition = shapePosition + key;
+				if (!ShapeUtils.ShapeInsidePolygon(newPosition, shapeExternalOffsets, patternPosition, patternExternalOffsets))
 				{
-					minDistance = key;
+					continue;
 				}
+				
+				minDistance = key;
 			}
 
 			return minDistance;
 		}
 
-		private bool ShapeInsidePattern(Vector3 shapeNewPosition, List<Vector3> shapeExternalOffsets, ShapeComponent patternShapeComponent)
+		private void Move(Transform currentTransform, Vector3 newPosition, float speed, float deltaTime)
 		{
-			foreach (var externalOffset in shapeExternalOffsets)
+			Vector3 currentPosition = currentTransform.position;
+			Vector3 direction = newPosition - currentPosition;
+			direction.z = 0f;
+			float distance = speed * deltaTime;
+			if (direction.magnitude < distance)
 			{
-				Vector3 externalPoint = shapeNewPosition + externalOffset;
-				if (!PointInPattern(externalPoint, patternShapeComponent.ExternalPointOffsets, patternShapeComponent.ShapeView.transform.position))
-				{
-					return false;
-				}
+				currentTransform.position = newPosition;
+				return;
 			}
-			
-			return true;
-		}
-
-		private bool PointInPattern(Vector3 point, List<Vector3> patternOffsets, Vector3 patternPosition) 
-		{
-			bool result = false;
-			var length = patternOffsets.Count;
-			for(int i = 0, j = length - 1; i < length; j = i++)
-			{
-				var position = patternPosition + patternOffsets[i];
-				var previousPosition = patternPosition + patternOffsets[j];
-				
-				if (position == point)
-				{
-					return true;
-				}
-				if (((position.y >= point.y) != (previousPosition.y >= point.y)) && 
-				    (point.x <= (previousPosition.x - position.x) * (point.y - position.y) / (previousPosition.y - position.y) + position.x)) 
-				{
-					result = !result;
-				}
-			}
-			return result;
+			currentPosition += direction.normalized * distance;
+			currentTransform.position = currentPosition;
 		}
 
 		public void Dispose()
