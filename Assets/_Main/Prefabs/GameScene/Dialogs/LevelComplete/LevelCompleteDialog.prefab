@@ -144,6 +144,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3823805582689621207}
   - component: {fileID: 1370667209154560608}
+  - component: {fileID: 5496679322874375434}
   m_Layer: 5
   m_Name: LevelCompleteDialog
   m_TagString: Untagged
@@ -187,17 +188,38 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 5496679322874375434}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: dialogAnimator
+      Entry: 10
+      Data: 0
   gameOverLabel: {fileID: 1286932264989415006}
   percentLabel: {fileID: 2457619073071558580}
   starsAnimator: {fileID: 1096120094064546400}
   closeButton: {fileID: 8296413178904486741}
   nextLevelButton: {fileID: 416140409292753693}
+--- !u!114 &5496679322874375434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3823805582689621206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f8a35c9945147d8a23ee774b4d03421, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetScale: {x: 1, y: 1, z: 1}
+  scaleDuration: 0.3
+  pause: 0
+  maxScale: 1.1
+  rectTransform: {fileID: 3823805583680386407}
 --- !u!1 &3823805583680386406
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,8 +750,43 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1098935937982451113, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2795852320010349318}
   m_SourcePrefab: {fileID: 100100000, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+--- !u!1 &2191139543935176667 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1098935937982451113, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+  m_PrefabInstance: {fileID: 1236319082002481778}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2795852320010349318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191139543935176667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470d80f36e9e461ca5bc2a449c28681c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 3470044032916734089}
+  animationDuration: 0.1
+  originalScale: {x: 1, y: 1, z: 1}
+  buttonPressedScale: {x: 0.9, y: 0.9, z: 0.9}
+--- !u!114 &3470044032916734089 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2378000719731802875, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+  m_PrefabInstance: {fileID: 1236319082002481778}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191139543935176667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3869465629341936574 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2637794204877187532, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
@@ -740,7 +797,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7064615593977258279, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
   m_PrefabInstance: {fileID: 1236319082002481778}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2191139543935176667}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aee9040411734865a3145db7473907ec, type: 3}
@@ -1188,14 +1245,17 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1098935937982451113, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7809978803497533705}
   m_SourcePrefab: {fileID: 100100000, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
 --- !u!114 &416140409292753693 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7064615593977258279, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
   m_PrefabInstance: {fileID: 7479602724806830650}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 7533633107480373139}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aee9040411734865a3145db7473907ec, type: 3}
@@ -1206,3 +1266,35 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2637794204877187532, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
   m_PrefabInstance: {fileID: 7479602724806830650}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5101654799285971137 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2378000719731802875, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+  m_PrefabInstance: {fileID: 7479602724806830650}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7533633107480373139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &7533633107480373139 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1098935937982451113, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+  m_PrefabInstance: {fileID: 7479602724806830650}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7809978803497533705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7533633107480373139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470d80f36e9e461ca5bc2a449c28681c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 5101654799285971137}
+  animationDuration: 0.1
+  originalScale: {x: 1, y: 1, z: 1}
+  buttonPressedScale: {x: 0.9, y: 0.9, z: 0.9}

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2378000719731802875}
   - component: {fileID: 7064615593977258279}
   - component: {fileID: 2312418875250846604}
+  - component: {fileID: 5540320383622937339}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -135,6 +136,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5540320383622937339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098935937982451113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470d80f36e9e461ca5bc2a449c28681c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 2378000719731802875}
+  animationDuration: 0.1
+  originalScale: {x: 1, y: 1, z: 1}
+  buttonPressedScale: {x: 0.9, y: 0.9, z: 0.9}
 --- !u!1 &7030708033991223799
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,7 +186,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.3480988, y: 5.1423}
+  m_AnchoredPosition: {x: -1.3480835, y: 5.1423035}
   m_SizeDelta: {x: -45.0619, y: -35.4117}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4456458261016856416

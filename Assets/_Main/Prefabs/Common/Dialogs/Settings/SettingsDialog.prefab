@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3470044032916734089}
   - component: {fileID: 8296413178904486741}
   - component: {fileID: 3548578192018614782}
+  - component: {fileID: 4204622306711802416}
   m_Layer: 5
   m_Name: MainMenuButton
   m_TagString: Untagged
@@ -135,6 +136,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4204622306711802416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191139543935176667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470d80f36e9e461ca5bc2a449c28681c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 3470044032916734089}
+  animationDuration: 0.1
+  originalScale: {x: 1, y: 1, z: 1}
+  buttonPressedScale: {x: 0.9, y: 0.9, z: 0.9}
 --- !u!1 &3823805582689621206
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,6 +162,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3823805582689621207}
   - component: {fileID: 8306530820538922052}
+  - component: {fileID: 4773246094370621692}
+  - component: {fileID: 7622142769733345334}
+  - component: {fileID: 2173053034525078230}
   m_Layer: 5
   m_Name: SettingsDialog
   m_TagString: Untagged
@@ -188,15 +208,76 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 4773246094370621692}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: dialogAnimator
+      Entry: 10
+      Data: 0
   label: {fileID: 1286932264989415006}
   continueButton: {fileID: 2642257317826710765}
   mainMenuButton: {fileID: 8296413178904486741}
+--- !u!114 &4773246094370621692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3823805582689621206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f8a35c9945147d8a23ee774b4d03421, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetScale: {x: 1, y: 1, z: 1}
+  scaleDuration: 0.3
+  pause: 0
+  maxScale: 1.1
+  rectTransform: {fileID: 3823805583680386407}
+--- !u!223 &7622142769733345334
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3823805582689621206}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &2173053034525078230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3823805582689621206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 55
 --- !u!1 &3823805583680386406
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,6 +1000,7 @@ GameObject:
   - component: {fileID: 8208065838596150766}
   - component: {fileID: 2642257317826710765}
   - component: {fileID: 3257306413971701023}
+  - component: {fileID: 4748653914980939813}
   m_Layer: 5
   m_Name: ContinueButton
   m_TagString: Untagged
@@ -1041,3 +1123,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4748653914980939813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8331572988146539209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470d80f36e9e461ca5bc2a449c28681c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 8208065838596150766}
+  animationDuration: 0.1
+  originalScale: {x: 1, y: 1, z: 1}
+  buttonPressedScale: {x: 0.9, y: 0.9, z: 0.9}
