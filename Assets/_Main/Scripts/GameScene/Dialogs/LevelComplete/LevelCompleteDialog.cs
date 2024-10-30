@@ -31,9 +31,16 @@ namespace _Main.Scripts.GameScene.Dialogs
             _percent = percent;
         }
 
-        protected override void OnDialogShown()
+        protected override void OnDialogStartShow()
         {
-            base.OnDialogShown();
+            base.OnDialogStartShow();
+            percentLabel.text = "0%";
+            starsAnimator.Reset();
+        }
+
+        protected override void OnDialogFinishShow()
+        {
+            base.OnDialogFinishShow();
             nextLevelButton.Button.onClick.AddListener(StartNextLevel);
             closeButton.Button.onClick.AddListener(CloseDialog);
             Animate();

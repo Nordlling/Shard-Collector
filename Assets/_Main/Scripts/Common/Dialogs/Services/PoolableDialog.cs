@@ -9,6 +9,8 @@ namespace App.Scripts.Modules.Dialogs.Interfaces
 {
     public abstract class PoolableDialog : MonoPoolableItem
     {
+        [SerializeField] private IDialogAnimator dialogAnimator;
+        
         public event Action OnDialogClose;
         public event Action OnDialogStartClose;
         public event Action<PoolableDialog, Action> OnCloseClick;
@@ -36,10 +38,11 @@ namespace App.Scripts.Modules.Dialogs.Interfaces
 
             var tween = DOTween.Sequence()
                 .AppendCallback(OnDialogStartShow)
+                .Append(dialogAnimator?.PlayShowDialog())
                 .OnComplete(() =>
                 {
                     onComplete?.Invoke();
-                    OnDialogShown();
+                    OnDialogFinishShow();
                 });
 
             return tween;
@@ -49,6 +52,7 @@ namespace App.Scripts.Modules.Dialogs.Interfaces
         {
             var tween = DOTween.Sequence()
                 .AppendCallback(() => OnDialogStartClose?.Invoke())
+                .Append(dialogAnimator?.PlayHideDialog())
                 .OnComplete(() =>
                 {
                     _isOpened = false;
@@ -74,7 +78,7 @@ namespace App.Scripts.Modules.Dialogs.Interfaces
         protected virtual void OnDialogInitialize() { }
         protected virtual void OnDialogSetup() { }
         protected virtual void OnDialogStartShow() { }
-        protected virtual void OnDialogShown() { }
+        protected virtual void OnDialogFinishShow() { }
         protected virtual void OnDialogReset() { }
     }
 }

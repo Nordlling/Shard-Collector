@@ -21,9 +21,9 @@ namespace _Main.Scripts.GameScene.Dialogs
             _dialogsService = dialogsService;
         }
 
-        protected override void OnDialogShown()
+        protected override void OnDialogFinishShow()
         {
-            base.OnDialogShown();
+            base.OnDialogFinishShow();
             continueButton.Button.onClick.AddListener(Continue);
             mainMenuButton.Button.onClick.AddListener(GoToMainMenu);
         }
