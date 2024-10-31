@@ -2,7 +2,6 @@ using System;
 using mattatz.Triangulation2DSystem;
 using Scellecs.Morpeh;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Main.Scripts.Spawn
 {
@@ -13,5 +12,6 @@ namespace _Main.Scripts.Spawn
         public Vector3 Position;
         public Vector3 Size;
         public Triangle2D[] Triangles;
+        public Vector3 PatternSize;
     }
 }

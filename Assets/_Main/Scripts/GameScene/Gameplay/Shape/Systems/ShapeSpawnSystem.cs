@@ -32,31 +32,41 @@ namespace _Main.Scripts.Spawn
         {
             foreach (var entity in _filter)
             {
-                ref var spawnSignal = ref entity.GetComponent<ShapeSpawnSignal>();
-                
-                if (spawnSignal.Triangles == null)
-                {
-                    UnityEngine.Debug.LogError("Null triangles");
-                    continue;
-                }
-                
-                ShapeUtils.RecalculateCenter(spawnSignal.Triangles);
-                Mesh mesh = ShapeUtils.CreateMesh(spawnSignal.Triangles);
-
-                var shapeView = _pool.Get();
-                shapeView.Init(entity, _renderConfig.ShapeMaterial, false);
-                shapeView.SetupTransformProperties(spawnSignal.Parent, spawnSignal.Position, spawnSignal.Size);
-                shapeView.MeshFilter.sharedMesh = mesh;
-                shapeView.ShadowMeshFilter.sharedMesh = mesh;
-
-                List<Vector3> externalPoints = ShapeUtils.FindExternalPoints(spawnSignal.Triangles, shapeView.transform.position);
-
-                ref var shapeComponent = ref entity.AddComponent<ShapeComponent>();
-                shapeComponent.ShapeView = shapeView;
-                shapeComponent.Triangles = spawnSignal.Triangles;
-                shapeComponent.Points = mesh.vertices;
-                shapeComponent.ExternalPointOffsets = externalPoints;
+                CreateShape(entity);
             }
+        }
+
+        private void CreateShape(Entity entity)
+        {
+            ref var spawnSignal = ref entity.GetComponent<ShapeSpawnSignal>();
+                
+            if (spawnSignal.Triangles == null)
+            {
+                UnityEngine.Debug.LogError("Null triangles");
+                return;
+            }
+                
+            Vector3 offset = ShapeUtils.RecalculateCenter(spawnSignal.Triangles);
+            Mesh mesh = ShapeUtils.CreateMesh(spawnSignal.Triangles);
+
+            var shapeView = _pool.Get();
+            shapeView.Init(entity, _renderConfig.ShapeMaterial, false);
+            shapeView.SetupTransformProperties(spawnSignal.Parent, spawnSignal.Position, spawnSignal.Size);
+            shapeView.MeshFilter.sharedMesh = mesh;
+            shapeView.ShadowMeshFilter.sharedMesh = mesh;
+            Vector3 shapePosition = shapeView.transform.position;
+            List<Vector3> externalPoints = ShapeUtils.FindExternalPoints(spawnSignal.Triangles, shapePosition);
+            
+            mesh.FillUV();
+            shapePosition -= offset;
+            shapeView.transform.position = shapePosition;
+            GradientUtils.ChangeColor(shapeView.MeshRenderer.material, Vector3.zero, spawnSignal.PatternSize, shapePosition, mesh.bounds.size);
+
+            ref var shapeComponent = ref entity.AddComponent<ShapeComponent>();
+            shapeComponent.ShapeView = shapeView;
+            shapeComponent.Triangles = spawnSignal.Triangles;
+            shapeComponent.Points = mesh.vertices;
+            shapeComponent.ExternalPointOffsets = externalPoints;
         }
 
         public void Dispose() { }

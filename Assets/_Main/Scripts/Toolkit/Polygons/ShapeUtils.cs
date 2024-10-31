@@ -37,7 +37,7 @@ namespace _Main.Scripts.Toolkit
 			return mesh;
 		}
 		
-		public static void RecalculateCenter(Triangle2D[] triangles)
+		public static Vector2 RecalculateCenter(Triangle2D[] triangles)
 		{
 			var minXPosition = float.MaxValue;
 			var maxXPosition = float.MinValue;
@@ -74,6 +74,8 @@ namespace _Main.Scripts.Toolkit
 				triangle.c = new Vertex2D(triangle.c.Coordinate + offset);
 				triangle.Offset = offset;
 			}
+
+			return offset;
 		}
 
 		public static List<Vector3> FindExternalPoints(Triangle2D[] triangles, Vector3 shapeCenterPosition)

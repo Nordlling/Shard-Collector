@@ -20,6 +20,7 @@ namespace _Main.Scripts
 		public MeshFilter ShadowMeshFilter => shadowMeshFilter;
 		public Transform ShadowTransform => shadowTransform;
 		public Rigidbody ShapeRigidbody => shapeRigidbody;
+		public MeshRenderer MeshRenderer => meshRenderer;
 
 		public void Init(Entity entity, Material meshRendererMaterial, bool renderLines = true)
 		{

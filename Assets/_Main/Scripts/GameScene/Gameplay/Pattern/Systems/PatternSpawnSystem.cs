@@ -63,7 +63,7 @@ namespace _Main.Scripts.Gameplay.GameBoard
                 var shapeComponent = patternEntity.GetComponent<ShapeComponent>();
                 var minWeight = shapeComponent.Area * _generateConfig.MinShapeAreaFraction;
                 var maxWeight = shapeComponent.Area * _generateConfig.MaxShapeAreaFraction;
-                CreateShapesByPattern(shapeComponent.Triangles, minWeight, maxWeight);
+                CreateShapesByPattern(shapeComponent.Triangles, minWeight, maxWeight, shapeComponent.ShapeView.MeshFilter.mesh.bounds.size);
             }
         }
 
@@ -120,11 +120,12 @@ namespace _Main.Scripts.Gameplay.GameBoard
             patternEntity.AddComponent<PatternMarker>();
             
             patternView.Init(patternEntity, _renderConfig.PatternMaterial);
+            mesh.FillUV();
             // patternEntity.AddComponent<ShapeRenderMarker>();
             return true;
         }
 
-        private void CreateShapesByPattern(Triangle2D[] patternTriangles, double minWeight, double maxWeight)
+        private void CreateShapesByPattern(Triangle2D[] patternTriangles, double minWeight, double maxWeight, Vector3 patternSize)
         {
             var shapes = _shapeGrouper.GroupTrianglesIntoShapes(patternTriangles, minWeight, maxWeight);
             _levelPlayStatusService.InitNewLevel(shapes.Count);
@@ -137,7 +138,8 @@ namespace _Main.Scripts.Gameplay.GameBoard
                 {
                     Parent = _gameBoardContent.ShapesContent,
                     Size = Vector3.one,
-                    Triangles = shapeTriangles.ToArray()
+                    Triangles = shapeTriangles.ToArray(),
+                    PatternSize = patternSize
                 });
             }
         }
