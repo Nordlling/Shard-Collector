@@ -28,15 +28,14 @@ namespace _Main.Scripts.GameScene
             _gameBoardInitializer = gameBoardInitializer;
         }
 
-        public void Create()
-        {
-            _worldRunner.CreateWorld(_systemGroupContainer);
-            Recreate();
-        }
-
         public void Tick()
         {
             _worldRunner.Update(Time.deltaTime);
+        }
+        
+        public void CreateWorld()
+        {
+            _worldRunner.CreateWorld(_systemGroupContainer);
         }
 
         public void DestroyWorld()

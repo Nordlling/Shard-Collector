@@ -13,7 +13,9 @@ namespace _Main.Scripts.GameScene
 
         public void Initialize()
         {
-            _gameSceneCreator.Create();
+            _gameSceneCreator.CreateWorld();
+            _gameSceneCreator.Recreate();
         }
+        
     }
 }

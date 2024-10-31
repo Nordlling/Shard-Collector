@@ -2,7 +2,8 @@ namespace _Main.Scripts.GameScene
 {
     public interface IGameSceneCreator
     {
-        void Create();
+        void CreateWorld();
         void Recreate();
+        void DestroyWorld();
     }
 }
