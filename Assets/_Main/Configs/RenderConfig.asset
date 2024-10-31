@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RenderConfig
   m_EditorClassIdentifier: 
   LineMaterial: {fileID: 2100000, guid: b6fcab9e4ac434900a603ec157f01fe2, type: 2}
-  ShapeMaterial: {fileID: 2100000, guid: fda5fc8b1ef4644bf9a45a1b80ec4d4e, type: 2}
-  PatternMaterial: {fileID: 2100000, guid: 807c392a5808b4f4291de420ed698ebc, type: 2}
+  ShapeMaterial: {fileID: 2100000, guid: 370ed4f2f13fa41148aa47ed5fa301cb, type: 2}
+  PatternMaterial: {fileID: 2100000, guid: 370ed4f2f13fa41148aa47ed5fa301cb, type: 2}
