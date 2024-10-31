@@ -4,7 +4,7 @@ using mattatz.Triangulation2DSystem;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace _Main.Scripts
+namespace _Main.Scripts.Toolkit
 {
     public class PolygonAreaCalculator
     {

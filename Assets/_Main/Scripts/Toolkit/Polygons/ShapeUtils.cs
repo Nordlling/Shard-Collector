@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using mattatz.Triangulation2DSystem;
 
-namespace _Main.Scripts 
+namespace _Main.Scripts.Toolkit
 {
 	public static class ShapeUtils 
 	{

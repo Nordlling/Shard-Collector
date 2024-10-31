@@ -2,7 +2,7 @@ using System;
 using mattatz.Triangulation2DSystem;
 using UnityEngine;
 
-namespace _Main.Scripts
+namespace _Main.Scripts.Toolkit
 {
     public static class TriangleExtensions
     {

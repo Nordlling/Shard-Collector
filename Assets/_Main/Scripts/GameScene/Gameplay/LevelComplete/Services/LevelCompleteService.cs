@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _Main.Scripts.GameScene;
 using _Main.Scripts.GameScene.Dialogs;
 using _Main.Scripts.GameScene.Services;
+using _Main.Scripts.Toolkit;
 using App.Scripts.Modules.Dialogs.Interfaces;
 using App.Scripts.Modules.EcsWorld.Infrastructure.Services;
 using Scellecs.Morpeh;

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using App.Scripts.Modules.Utils.RandomService;
 using mattatz.Triangulation2DSystem;
 
-namespace _Main.Scripts.Gameplay.GameBoard
+namespace _Main.Scripts.Toolkit
 {
     public class ShapeGrouper
     {
