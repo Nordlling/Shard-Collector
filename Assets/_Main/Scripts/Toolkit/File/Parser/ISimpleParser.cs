@@ -1,4 +1,4 @@
-namespace _Main.Scripts.Toolkit.File
+namespace _Main.Scripts.Toolkit.File.Parser
 {
     public interface ISimpleParser
     {

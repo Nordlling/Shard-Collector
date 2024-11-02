@@ -4,8 +4,6 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using _Main.Scripts;
-using _Main.Scripts.Toolkit;
 
 namespace mattatz.Triangulation2DSystem {
 
@@ -24,7 +22,7 @@ namespace mattatz.Triangulation2DSystem {
 			this.a = s0.a;
 			this.b = s0.b;
 			this.c = (s2.b == this.a || s2.b == this.b) ? s2.a : s2.b;
-			Area = this.GetArea();
+			Area = GetArea();
 		}
 
 		public bool HasPoint (Vertex2D p) {
@@ -105,6 +103,16 @@ namespace mattatz.Triangulation2DSystem {
 			s0.DrawGizmos();
 			s1.DrawGizmos();
 			s2.DrawGizmos();
+		}
+		
+		public double GetArea()
+		{
+			double x1 = a.Coordinate.x, y1 = a.Coordinate.y;
+			double x2 = b.Coordinate.x, y2 = b.Coordinate.y;
+			double x3 = c.Coordinate.x, y3 = c.Coordinate.y;
+
+			double area = Math.Abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2f;
+			return area;
 		}
 
 	}

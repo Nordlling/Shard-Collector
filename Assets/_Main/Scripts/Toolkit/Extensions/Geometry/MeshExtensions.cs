@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Main.Scripts.Toolkit
+namespace _Main.Scripts.Toolkit.Extensions.Geometry
 {
     public static class MeshExtensions
     {

@@ -1,0 +1,18 @@
+{
+    "name": "Main.Global.Initialization",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:6f28bbd36c22a49759d0dc0905d481dd",
+        "GUID:098369af0e0aa4a44abea54edbc74e94"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,7 +1,7 @@
 using System.Collections;
-using App.Scripts.Modules.Utils.RandomService;
+using _Main.Scripts.Toolkit.Random;
 
-namespace _Main.Scripts 
+namespace _Main.Scripts.Toolkit.Extensions.Collections 
 {
     public static class ListExtensions
     {

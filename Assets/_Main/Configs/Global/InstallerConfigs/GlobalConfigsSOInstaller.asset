@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2945847be5439198a236fd3fdfd75c, type: 3}
+  m_Name: GlobalConfigsSOInstaller
+  m_EditorClassIdentifier: 
+  levelConfig: {fileID: 11400000, guid: 77cbd6fba9c5f47f8a73d24006e4db50, type: 2}

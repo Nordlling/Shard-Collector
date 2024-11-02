@@ -1,0 +1,20 @@
+{
+    "name": "Main.Toolkit",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c6b9ef0049c4048e0845bee99f8b77b1",
+        "GUID:1509c7ff25f1647598801c7b6c194429",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:67d6b899dfbd44e6c9c6dc3ff7d756a9",
+        "GUID:029c1c1b674aaae47a6841a0b89ad80e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

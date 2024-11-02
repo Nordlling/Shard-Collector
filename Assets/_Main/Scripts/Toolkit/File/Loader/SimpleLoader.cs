@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace _Main.Scripts.Toolkit.File
+namespace _Main.Scripts.Toolkit.File.Loader
 {
     public class SimpleLoader : ISimpleLoader
     {

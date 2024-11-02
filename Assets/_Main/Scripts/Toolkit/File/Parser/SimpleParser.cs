@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace _Main.Scripts.Toolkit.File
+namespace _Main.Scripts.Toolkit.File.Parser
 {
     public class SimpleParser : ISimpleParser
     {
