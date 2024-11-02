@@ -8,7 +8,7 @@ namespace _Main.Scripts.GameScene.Services
         private readonly ISimpleParser _parserService;
         private readonly ISaveKeysContainer _keysContainer;
 
-        private LevelSaveData _cashedLevelSaveData;
+        private CurrentLevelSaveData _cashedLevelSaveData;
 
         public LevelSaveService(IStorageService storageService, ISimpleParser parserService, ISaveKeysContainer keysContainer)
         {
@@ -17,7 +17,7 @@ namespace _Main.Scripts.GameScene.Services
             _keysContainer = keysContainer;
         }
 
-        public LevelSaveData LoadCurrentLevelData()
+        public CurrentLevelSaveData LoadCurrentLevelData()
         {
             if (_cashedLevelSaveData != null)
             {
@@ -25,11 +25,11 @@ namespace _Main.Scripts.GameScene.Services
             }
             
             var plainData = _storageService.GetString(_keysContainer.LevelInfoKey);
-            LevelSaveData resultData = _parserService.ParseFromText<LevelSaveData>(plainData);
-            return resultData ?? new LevelSaveData();
+            CurrentLevelSaveData resultData = _parserService.ParseFromText<CurrentLevelSaveData>(plainData);
+            return resultData ?? new CurrentLevelSaveData();
         }
 
-        public void SaveCurrentLevelData(LevelSaveData levelSaveData)
+        public void SaveCurrentLevelData(CurrentLevelSaveData levelSaveData)
         {
             var plainData = _parserService.ParseToText(levelSaveData);
             _storageService.SetString(_keysContainer.LevelInfoKey, plainData);

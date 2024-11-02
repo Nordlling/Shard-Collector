@@ -4,7 +4,7 @@ namespace _Main.Scripts.GameScene.Services
 {
     
     [Serializable]
-    public class LevelSaveData
+    public class CurrentLevelSaveData
     {
         public int LevelIndex;
     }
