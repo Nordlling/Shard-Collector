@@ -13,7 +13,6 @@ namespace _Main.Scripts.Common.Installers
         [SerializeField] private bool setSeed;
         [SerializeField] [ShowIf(nameof(setSeed))] private int seed;
         
-        
         public override void InstallBindings()
         {
             int currentSeed = setSeed ? seed : DateTime.Now.Millisecond;
@@ -25,6 +24,8 @@ namespace _Main.Scripts.Common.Installers
             Container.Bind<ISimpleParser>().To<SimpleParser>().AsSingle();
             Container.Bind<IStorageService>().To<StoragePrefsService>().AsSingle();
             Container.Bind<ILevelSaveService>().To<LevelSaveService>().AsSingle();
+
+            Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
         }
     }
 }
