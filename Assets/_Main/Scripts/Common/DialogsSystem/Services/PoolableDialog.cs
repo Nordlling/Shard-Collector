@@ -65,7 +65,7 @@ namespace App.Scripts.Modules.Dialogs.Interfaces
             return tween;
         }
 
-        public virtual void Close(Action onComplete)
+        public virtual void Close(Action onComplete = null)
         {
             OnCloseClick?.Invoke(this, onComplete);
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Main.Scripts.UI.Animations.Mono
+namespace _Main.Scripts.Common.Dialogs
 {
     public class ButtonAnimation : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {

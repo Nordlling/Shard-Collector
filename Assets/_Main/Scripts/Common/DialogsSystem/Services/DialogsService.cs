@@ -6,6 +6,7 @@ using App.Scripts.Modules.Dialogs.Interfaces;
 using App.Scripts.Modules.Pool.Interfaces.Pool;
 using DG.Tweening;
 using UnityEngine;
+
 namespace App.Scripts.Modules.Dialogs.Services
 {
 	public class DialogsService : IDialogsService
