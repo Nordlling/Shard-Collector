@@ -662,6 +662,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 814989684}
+  eventSystem: {fileID: 0}
 --- !u!4 &1051908480
 Transform:
   m_ObjectHideFlags: 0
@@ -1105,7 +1106,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eff4dc7838b94a31833a73aa82e63dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  independent: 1
   button: {fileID: 1331336485}
+  transitSceneName: GameScene
 --- !u!1 &1346288373
 GameObject:
   m_ObjectHideFlags: 0
