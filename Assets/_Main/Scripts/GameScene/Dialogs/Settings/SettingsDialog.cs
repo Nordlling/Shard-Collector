@@ -1,49 +1,38 @@
-using _Main.Scripts.Common.Dialogs.DialogElements;
+using _Main.Scripts.Common.Dialogs;
 using App.Scripts.Modules.Dialogs.Interfaces;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Zenject;
 
 namespace _Main.Scripts.GameScene.Dialogs
 {
     public class SettingsDialog : PoolableDialog
     {
         [SerializeField] private TextMeshProUGUI label;
-        [SerializeField] private ButtonHandler continueButton;
-        [SerializeField] private ButtonHandler mainMenuButton;
-        
-        private IDialogsService _dialogsService;
-
-        [Inject]
-        public void Construct(IDialogsService dialogsService)
-        {
-            _dialogsService = dialogsService;
-        }
+        [SerializeField] private IButtonHandler continueButtonHandler;
+        [SerializeField] private IButtonHandler mainMenuButtonHandler;
 
         protected override void OnDialogFinishShow()
         {
             base.OnDialogFinishShow();
-            continueButton.Button.onClick.AddListener(Continue);
-            mainMenuButton.Button.onClick.AddListener(GoToMainMenu);
+            continueButtonHandler.Button.onClick.AddListener(Continue);
+            mainMenuButtonHandler.Button.onClick.AddListener(GoToMainMenu);
         }
 
         protected override void OnDialogReset()
         {
             base.OnDialogReset();
-            continueButton.Button.onClick.RemoveListener(Continue);
-            mainMenuButton.Button.onClick.RemoveListener(GoToMainMenu);
+            continueButtonHandler.Button.onClick.RemoveListener(Continue);
+            mainMenuButtonHandler.Button.onClick.RemoveListener(GoToMainMenu);
         }
 
         private void Continue()
         {
-            Close(null);
+            Close(() => continueButtonHandler.Execute());
         }
 
         private void GoToMainMenu()
         {
-            Close(null);
-            SceneManager.LoadScene("MainScene");
+            Close(() => mainMenuButtonHandler.Execute());
         }
     }
 }

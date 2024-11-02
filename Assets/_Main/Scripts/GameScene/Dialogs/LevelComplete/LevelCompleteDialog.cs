@@ -1,6 +1,8 @@
-using _Main.Scripts.Common.Dialogs.DialogElements;
+using _Main.Scripts.Common.Dialogs;
+using _Main.Scripts.GameScene.Services;
 using App.Scripts.Modules.Dialogs.Interfaces;
 using DG.Tweening;
+using Main.Scripts.Infrastructure.States;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -11,65 +13,64 @@ namespace _Main.Scripts.GameScene.Dialogs
     {
         [SerializeField] private TextMeshProUGUI gameOverLabel;
         [SerializeField] private TextMeshProUGUI percentLabel;
+        [SerializeField] private TextMeshProUGUI nextLevelLabel;
+        [SerializeField] private string nextLevelText;
+        [SerializeField] private string restartText;
         [SerializeField] private StarsAnimator starsAnimator;
-        [SerializeField] private ButtonHandler closeButton;
-        [SerializeField] private ButtonHandler nextLevelButton;
+        [SerializeField] private IButtonHandler nextLevelButtonHandler;
+        [SerializeField] private IButtonHandler mainMenuButtonHandler;
 
+        private IGameStateMachine _gameStateMachine;
         private LevelCompleteConfig _levelCompleteConfig;
-        private IGameSceneCreator _gameSceneCreator;
-        private int _percent;
+        private ICurrentLevelService _currentLevelService;
 
         [Inject]
-        public void Construct(LevelCompleteConfig levelCompleteConfig, IGameSceneCreator gameSceneCreator)
+        public void Construct(IGameStateMachine gameStateMachine, LevelCompleteConfig levelCompleteConfig, ICurrentLevelService currentLevelService)
         {
+            _gameStateMachine = gameStateMachine;
             _levelCompleteConfig = levelCompleteConfig;
-            _gameSceneCreator = gameSceneCreator;
-        }
-
-        public void Setup(int percent)
-        {
-            _percent = percent;
+            _currentLevelService = currentLevelService;
         }
 
         protected override void OnDialogStartShow()
         {
             base.OnDialogStartShow();
             percentLabel.text = "0%";
+            nextLevelLabel.text = _currentLevelService.CanLevelUp ? nextLevelText : restartText;
             starsAnimator.Reset();
         }
 
         protected override void OnDialogFinishShow()
         {
             base.OnDialogFinishShow();
-            nextLevelButton.Button.onClick.AddListener(StartNextLevel);
-            closeButton.Button.onClick.AddListener(CloseDialog);
+            nextLevelButtonHandler.Button.onClick.AddListener(StartNextLevel);
+            mainMenuButtonHandler.Button.onClick.AddListener(GoToMainMenu);
             Animate();
         }
 
         protected override void OnDialogReset()
         {
             base.OnDialogReset();
-            nextLevelButton.Button.onClick.RemoveListener(StartNextLevel);
-            closeButton.Button.onClick.RemoveListener(CloseDialog);
+            nextLevelButtonHandler.Button.onClick.RemoveListener(StartNextLevel);
+            mainMenuButtonHandler.Button.onClick.RemoveListener(GoToMainMenu);
         }
 
         private void Animate()
         {
-            AnimateCounter(_percent);
-            InitStarsAnimator(_percent);
+            int percent = _currentLevelService.LastCompletedLevel.Percent;
+            AnimateCounter(percent);
+            InitStarsAnimator(percent);
         }
 
         private void StartNextLevel()
         {
-            Close(null);
-            _gameSceneCreator.Recreate();
+            Close(() => _gameStateMachine.Enter<StartLevelState>());
         }
 
-        private void CloseDialog()
+        private void GoToMainMenu()
         {
-            Close(null);
+            Close(() => mainMenuButtonHandler.Execute());
         }
-
 
         private void AnimateCounter(int percent)
         {
