@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using App.Scripts.Modules.EcsWorld.Common.Extensions;
 using App.Scripts.Modules.Utils.RandomService;
+using DG.Tweening;
 using Scellecs.Morpeh;
 
 namespace _Main.Scripts
@@ -54,8 +55,7 @@ namespace _Main.Scripts
                 {
                     Index = i
                 });
-                shapeEntity.AddComponent<ShapeToSelectorSignal>();
-                
+                DOVirtual.DelayedCall(2f, () => shapeEntity.AddComponent<ShapeToSelectorSignal>());
             }
 
             entity.RemoveComponent<AllShapesInSelectorSignal>();
