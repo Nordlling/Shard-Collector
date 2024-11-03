@@ -65,7 +65,8 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Systems
             mesh.FillUV();
             shapePosition -= offset;
             shapeView.transform.position = shapePosition;
-            GradientUtils.ChangeColor(shapeView.MeshRenderer.material, Vector3.zero, spawnSignal.PatternSize, shapePosition, mesh.bounds.size);
+            var propertyBlock = GradientUtils.GetChangeColorPropertyBlock(shapeView.MeshRenderer.material, Vector3.zero, spawnSignal.PatternSize, shapePosition, mesh.bounds.size);
+            shapeView.MeshRenderer.SetPropertyBlock(propertyBlock);
 
             ref var shapeComponent = ref entity.AddComponent<ShapeComponent>();
             shapeComponent.ShapeView = shapeView;

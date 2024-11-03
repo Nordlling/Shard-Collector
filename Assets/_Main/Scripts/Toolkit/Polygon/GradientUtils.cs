@@ -4,12 +4,13 @@ namespace _Main.Scripts.Toolkit.Polygon
 {
     public static class GradientUtils
     {
+        private static readonly MaterialPropertyBlock PropertyBlock = new();
         private static readonly int TopLeftColor = Shader.PropertyToID("_TopLeftColor");
         private static readonly int TopRightColor = Shader.PropertyToID("_TopRightColor");
         private static readonly int BottomLeftColor = Shader.PropertyToID("_BottomLeftColor");
         private static readonly int BottomRightColor = Shader.PropertyToID("_BottomRightColor");
         
-        public static void ChangeColor(Material shapeMaterial, Vector3 patternPosition, Vector3 patternSize, Vector3 shapePosition, Vector3 shapeSize)
+        public static MaterialPropertyBlock GetChangeColorPropertyBlock(Material shapeMaterial, Vector3 patternPosition, Vector3 patternSize, Vector3 shapePosition, Vector3 shapeSize)
         {
             Vector3 patternMinPosition = patternPosition - patternSize / 2;
             
@@ -27,23 +28,27 @@ namespace _Main.Scripts.Toolkit.Polygon
             Color bottomLeftColor = shapeMaterial.GetColor(BottomLeftColor);
             Color bottomRightColor = shapeMaterial.GetColor(BottomRightColor);
 
-            SetColorToMaterial(shapeMaterial, TopLeftColor, shapeMinRelativeValue.x, shapeMaxRelativeValue.y,
+            PropertyBlock.Clear();
+            SetColorToPropertyBlock(TopLeftColor, shapeMinRelativeValue.x, shapeMaxRelativeValue.y,
                 topLeftColor, topRightColor, bottomLeftColor, bottomRightColor);
-            SetColorToMaterial(shapeMaterial, TopRightColor, shapeMaxRelativeValue.x, shapeMaxRelativeValue.y, 
+            SetColorToPropertyBlock(TopRightColor, shapeMaxRelativeValue.x, shapeMaxRelativeValue.y, 
                 topLeftColor, topRightColor, bottomLeftColor, bottomRightColor);
-            SetColorToMaterial(shapeMaterial, BottomLeftColor, shapeMinRelativeValue.x, shapeMinRelativeValue.y,
+            SetColorToPropertyBlock(BottomLeftColor, shapeMinRelativeValue.x, shapeMinRelativeValue.y,
                 topLeftColor, topRightColor, bottomLeftColor, bottomRightColor);
-            SetColorToMaterial(shapeMaterial, BottomRightColor, shapeMaxRelativeValue.x, shapeMaxRelativeValue.y,
+            SetColorToPropertyBlock(BottomRightColor, shapeMaxRelativeValue.x, shapeMinRelativeValue.y,
                 topLeftColor, topRightColor, bottomLeftColor, bottomRightColor);
+            
+            return PropertyBlock;
         }
 
-        private static void SetColorToMaterial(Material material, int materialParam, float relativePositionX, float relativePositionY, 
+        private static void SetColorToPropertyBlock(int materialParam, float relativePositionX, float relativePositionY, 
             Color topLeftColor, Color topRightColor, Color bottomLeftColor, Color bottomRightColor)
         {
             Color bottomColor = Color.Lerp(bottomLeftColor, bottomRightColor, relativePositionX);
             Color topColor = Color.Lerp(topLeftColor, topRightColor, relativePositionX);
             Color color = Color.Lerp(bottomColor, topColor, relativePositionY);
-            material.SetColor(materialParam, color);
+            PropertyBlock.SetColor(materialParam, color);
         }
+        
     }
 }
