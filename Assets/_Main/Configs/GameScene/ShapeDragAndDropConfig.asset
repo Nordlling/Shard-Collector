@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinOverlapCount: 0
   MaxOverlapDistance: 5
+  StartLevelShapeMoveToPatternDelay: 2
   ShadowMoveSpeed: 15
   ShapeMoveToPatternDuration: 0.2
   ShapeMoveToSelectorDuration: 0.3
   ShapeScaleDuration: 0.3
+  DragOffset: {x: -5, y: 0}
