@@ -142,10 +142,12 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 				if (newShape)
 				{
 					_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
+					_draggedShapeEntity = null;
 					return;
 				}
 				
 				shapeView.transform.DOMove(_oldPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration);
+				_draggedShapeEntity = null;
 				return;
 			}
 
@@ -162,6 +164,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 				_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
 				_shapeSelectorFilter.First().AddComponent<ShapeSelectorResortSignal>();
 			}
+			_draggedShapeEntity = null;
 		}
 
 		private void CheckMagnet(float deltaTime)
@@ -185,7 +188,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 				patternView.transform.position, patternShapeComponent.ExternalPointOffsets);
 			_newPosition = shapePosition + minDistance;
 			
-			if (minDistance == _maxVector)
+			if (minDistance == _maxVector || _newPosition == _oldPosition)
 			{
 				_magnet = false;
 				_newPosition = default;
