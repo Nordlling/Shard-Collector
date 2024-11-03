@@ -73,12 +73,15 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
                 resultSize *= 0.8f;
                 
                 var shapeTransform = shapeComponent.ShapeView.transform;
-                entity.RemoveComponent<ShapeToSelectorSignal>();
-
+                
                 DOTween.Sequence()
                     .Append(shapeTransform.DOMove(targetPosition, _shapeDragAndDropConfig.ShapeMoveToSelectorDuration))
                     .Join(shapeTransform.DOScale(resultSize, _shapeDragAndDropConfig.ShapeScaleDuration))
-                    .OnComplete(() => _gameStateMachine.Enter<PlayLevelState>());
+                    .OnComplete(() =>
+                    {
+                        entity.RemoveComponent<ShapeToSelectorSignal>();
+                        entity.RemoveComponent<ShapeInMoveMarker>();
+                    });
             }
 
             foreach (var entity in _shapesFromSelectorFilter)

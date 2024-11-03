@@ -68,6 +68,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
                 {
                     shapeInSelectorComponent.Index = _visibleIndexes[0];
                     entity.AddComponent<ShapeToSelectorSignal>();
+                    entity.AddComponent<ShapeInMoveMarker>();
                     _visibleIndexes.RemoveAt(0);
                 }
                 

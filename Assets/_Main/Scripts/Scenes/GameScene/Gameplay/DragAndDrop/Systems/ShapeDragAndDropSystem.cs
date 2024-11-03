@@ -3,6 +3,7 @@ using _Main.Scripts.Global.Ecs.Extensions;
 using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
+using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Components;
 using _Main.Scripts.Scenes.GameScene.Services.Level.Status;
 using _Main.Scripts.Toolkit.Extensions.Geometry;
@@ -25,10 +26,9 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 		private Filter _shapeSelectorFilter;
 
 		private readonly Dictionary<Vector3, int> _magnetMap = new();
-		private Entity _draggedShapeEntity;
-		
 		private readonly Vector3 _maxVector = new(float.MaxValue, float.MaxValue, float.MaxValue);
 		
+		private Entity _draggedShapeEntity;
 		private Vector2 _centerOffset;
 		private Vector2 _oldPosition;
 		private Vector2 _newPosition;
@@ -49,7 +49,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 		{
 			_shapesFilter = World.Filter
 				.With<ShapeComponent>()
-				// .With<ShapeInSelectorComponent>()
 				.Without<PatternMarker>()
 				.Build();
 			
@@ -66,7 +65,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 		public void OnUpdate(float deltaTime)
 		{
 			CheckInput(deltaTime);
-			TryDragShape(deltaTime);
 		}
 
 		private void CheckInput(float deltaTime)
@@ -84,30 +82,40 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			{
 				TryDropShape(deltaTime);
 				_dragging = false;
-				_draggedShapeEntity = null;
+			}
+			else
+			{
+				TryDragShape(deltaTime);
 			}
 		}
 
 		private void TryTakeShape()
 		{
+			if (!_draggedShapeEntity.IsNullOrDisposed() && _draggedShapeEntity.Has<ShapeInMoveMarker>())
+			{
+				return;
+			}
+			
 			Vector3 touchPosition = _inputService.GetTouchPositionInWorld();
 
 			foreach (var entity in _shapesFilter)
 			{
-				var shapeComponent = entity.GetComponent<ShapeComponent>();
-				var shapeView = shapeComponent.ShapeView;
-				if (touchPosition.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
+				var shapeView = entity.GetComponent<ShapeComponent>().ShapeView;
+
+				if (!touchPosition.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
 				{
-					_draggedShapeEntity = entity;
-					_oldPosition = shapeView.transform.position;
-					_dragging = true;
-					_centerOffset = shapeComponent.ShapeView.transform.position - touchPosition;
-					if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
-					{
-						_draggedShapeEntity.AddComponent<ShapeFromSelectorSignal>();
-					}
-					break;
+					continue;
 				}
+				
+				_draggedShapeEntity = entity;
+				_oldPosition = shapeView.transform.position;
+				_dragging = true;
+				_centerOffset = shapeView.transform.position - touchPosition;
+				if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
+				{
+					_draggedShapeEntity.AddComponent<ShapeFromSelectorSignal>();
+				}
+				break;
 			}
 		}
 
@@ -135,36 +143,54 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			var shapeView = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView;
 			shapeView.ShadowTransform.gameObject.SetActive(false);
 			bool newShape = !_draggedShapeEntity.Has<ShapeOnPatternMarker>();
+			_draggedShapeEntity.AddComponent<ShapeInMoveMarker>();
 
 			if (!_magnet)
 			{
-				// shapeView.transform.position = _oldPosition;
-				if (newShape)
-				{
-					_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
-					_draggedShapeEntity = null;
-					return;
-				}
-				
-				shapeView.transform.DOMove(_oldPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration);
-				_draggedShapeEntity = null;
-				return;
+				DropShapeWithoutMagnet(shapeView, newShape);
 			}
-
-			shapeView.transform.DOMove(_newPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration).OnKill(() =>
+			else
 			{
-				_levelPlayStatusService.UseMove(newShape);
-			});
-			// shapeView.transform.position = _newPosition;
-			// _draggedShapeEntity.AddComponent<ShapeOnPatternSignal>();
+				DropShapeWithMagnet(shapeView, newShape);
+			}
+		}
 
+		private void DropShapeWithoutMagnet(ShapeView shapeView, bool newShape)
+		{
+			if (newShape)
+			{
+				_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
+			}
+			else
+			{
+				shapeView.transform
+					.DOMove(_oldPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration)
+					.OnKill(() =>
+					{
+						_draggedShapeEntity.RemoveComponent<ShapeInMoveMarker>();
+						_draggedShapeEntity = null;
+					});
+				
+			}
+		}
+
+		private void DropShapeWithMagnet(ShapeView shapeView, bool newShape)
+		{
 			if (newShape)
 			{
 				_draggedShapeEntity.AddComponent<ShapeOnPatternMarker>();
 				_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
 				_shapeSelectorFilter.First().AddComponent<ShapeSelectorResortSignal>();
 			}
-			_draggedShapeEntity = null;
+			
+			shapeView.transform
+				.DOMove(_newPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration)
+				.OnKill(() =>
+				{
+					_draggedShapeEntity.RemoveComponent<ShapeInMoveMarker>();
+					_draggedShapeEntity = null;
+					_levelPlayStatusService.UseMove(newShape);
+				});
 		}
 
 		private void CheckMagnet(float deltaTime)
