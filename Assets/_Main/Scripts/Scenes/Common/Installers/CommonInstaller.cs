@@ -1,5 +1,6 @@
 using System;
 using _Main.Scripts.Global.SaveSystem.Level;
+using _Main.Scripts.Global.UI.Loading;
 using _Main.Scripts.Toolkit.File.Loader;
 using _Main.Scripts.Toolkit.File.Parser;
 using _Main.Scripts.Toolkit.File.Saver;
@@ -13,6 +14,7 @@ namespace _Main.Scripts.Global.Installers
 {
     public class CommonInstaller : MonoInstaller
     {
+        [SerializeField] private LoadingScreen loadingScreen;
         [SerializeField] private bool setSeed;
         [SerializeField] [ShowIf(nameof(setSeed))] private int seed;
         
@@ -29,6 +31,7 @@ namespace _Main.Scripts.Global.Installers
             Container.Bind<ILevelSaveService>().To<LevelSaveService>().AsSingle();
 
             Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
+            Container.Bind<LoadingScreen>().FromInstance(loadingScreen).AsSingle();
         }
     }
 }
