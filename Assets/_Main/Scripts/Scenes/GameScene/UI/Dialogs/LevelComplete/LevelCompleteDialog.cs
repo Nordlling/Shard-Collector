@@ -7,6 +7,7 @@ using _Main.Scripts.Scenes.GameScene.Services.Level.CurrentLevel;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace _Main.Scripts.Scenes.GameScene.UI.Dialogs.LevelComplete
@@ -18,7 +19,7 @@ namespace _Main.Scripts.Scenes.GameScene.UI.Dialogs.LevelComplete
         [SerializeField] private TextMeshProUGUI nextLevelLabel;
         [SerializeField] private string nextLevelText;
         [SerializeField] private string restartText;
-        [SerializeField] private StarsAnimator starsAnimator;
+        [SerializeField] private LevelCompleteAnimatior animator;
         [SerializeField] private IButtonHandler nextLevelButtonHandler;
         [SerializeField] private IButtonHandler mainMenuButtonHandler;
 
@@ -39,7 +40,7 @@ namespace _Main.Scripts.Scenes.GameScene.UI.Dialogs.LevelComplete
             base.OnDialogStartShow();
             percentLabel.text = "0%";
             nextLevelLabel.text = _currentLevelService.CanLevelUp ? nextLevelText : restartText;
-            starsAnimator.Reset();
+            animator.Reset();
         }
 
         protected override void OnDialogFinishShow()
@@ -59,9 +60,14 @@ namespace _Main.Scripts.Scenes.GameScene.UI.Dialogs.LevelComplete
 
         private void Animate()
         {
-            int percent = _currentLevelService.LastCompletedLevel.Percent;
-            AnimateCounter(percent);
-            InitStarsAnimator(percent);
+            float percent = _currentLevelService.LastCompletedLevel.Percent;
+            float star1FillAmount = percent / _levelCompleteConfig.FirstStarFullPercent;
+            float star2FillAmount = (percent - _levelCompleteConfig.FirstStarFullPercent) /
+                                    (_levelCompleteConfig.SecondStarFullPercent - _levelCompleteConfig.FirstStarFullPercent);
+            float star3FillAmount = (percent - _levelCompleteConfig.SecondStarFullPercent) /
+                                    (_levelCompleteConfig.ThirdStarFullPercent - _levelCompleteConfig.SecondStarFullPercent);
+
+            animator.PlayAnimation((int)percent, star1FillAmount, star2FillAmount, star3FillAmount);
         }
 
         private void StartNextLevel()
@@ -72,33 +78,6 @@ namespace _Main.Scripts.Scenes.GameScene.UI.Dialogs.LevelComplete
         private void GoToMainMenu()
         {
             Close(() => mainMenuButtonHandler.Execute());
-        }
-
-        private void AnimateCounter(int percent)
-        {
-            int oldCounter = 0;
-            int newCounter = percent;
-            
-            DOTween.Sequence()
-                .AppendInterval(0f)
-                .Append(DOTween
-                    .To(() => oldCounter, x => oldCounter = x, newCounter, 1.5f)
-                    .OnUpdate(() => percentLabel.text = $"{oldCounter}%"))
-                .OnKill(() =>
-                {
-                    percentLabel.text = $"{newCounter}%";
-                });
-        }
-
-        private void InitStarsAnimator(float percent)
-        {
-            float star1FillAmount = percent / _levelCompleteConfig.FirstStarFullPercent;
-            float star2FillAmount = (percent - _levelCompleteConfig.FirstStarFullPercent) /
-                                    (_levelCompleteConfig.SecondStarFullPercent - _levelCompleteConfig.FirstStarFullPercent);
-            float star3FillAmount = (percent - _levelCompleteConfig.SecondStarFullPercent) /
-                                    (_levelCompleteConfig.ThirdStarFullPercent - _levelCompleteConfig.SecondStarFullPercent);
-
-            starsAnimator.PlayAnimation(star1FillAmount, star2FillAmount, star3FillAmount);
         }
         
     }
