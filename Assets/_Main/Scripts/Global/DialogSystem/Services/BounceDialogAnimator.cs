@@ -5,11 +5,11 @@ namespace _Main.Scripts.Global.DialogSystem.Services
 {
     public class BounceDialogAnimator : MonoBehaviour, IDialogAnimator
     {
+        [SerializeField] private RectTransform rectTransform;
         [SerializeField] private Vector3 targetScale = Vector3.one;
         [SerializeField] private float scaleDuration = 0.3f;
         [SerializeField] private float pause;
         [SerializeField] private float maxScale = 1.1f;
-        [SerializeField] private RectTransform rectTransform;
 
         public Tween PlayShowDialog()
         {
