@@ -92,9 +92,7 @@ Shader "UI/Gradient"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 				OUT.worldPosition = IN.vertex;
 				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
-
 				OUT.texcoord = IN.texcoord;
-
 				OUT.color = IN.color;
 				return OUT;
 			}
