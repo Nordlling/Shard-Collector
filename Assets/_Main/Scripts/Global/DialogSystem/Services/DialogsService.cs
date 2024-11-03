@@ -76,8 +76,8 @@ namespace _Main.Scripts.Global.DialogSystem.Services
 			{
 				return DOTween.Sequence();
 			}
-			
 		
+			_inputService.EnableInput();
 			dialog.OnCloseClick -= OnDialogClose;
 		
 			OnDialogStartClose?.Invoke(dialog);
@@ -85,7 +85,6 @@ namespace _Main.Scripts.Global.DialogSystem.Services
 			return dialog.CloseDialog(() =>
 			{
 				onComplete?.Invoke();
-				_inputService.EnableInput();
 			});
 		}
 		
