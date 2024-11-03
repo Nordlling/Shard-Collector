@@ -58,15 +58,16 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Systems
 
 		public void OnUpdate(float deltaTime)
 		{
-			if (_inputService.InputActivity)
+			if (_inputService.InputActivity && _patternDrawingConfig.Enabled)
 			{
-				if (Input.GetMouseButtonDown(1)) {
+				if (Input.GetMouseButtonDown(0)) {
 					_dragging = true;
 					_points.Clear();
-				} else if(Input.GetMouseButtonUp(1)) {
+				} else if(Input.GetMouseButtonUp(0)) {
 					_dragging = false;
 					CreatePattern();
 					_pointsText = string.Join(",", _points.Select(el => $"\"x\":{el.x}, \"y\":{el.y}").ToList());
+					_patternDrawingConfig.Enabled = false;
 				}
 			}
 
