@@ -118,9 +118,9 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 				return;
 			}
 			
-			Vector3 touchPosition = _inputService.GetTouchPositionInWorld();
+			Vector2 touchPosition = _inputService.GetTouchPositionInWorld();
 			Transform shapeTransform = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView.transform;
-			Vector2 newShapePosition = new Vector3(touchPosition.x, touchPosition.y, shapeTransform.position.z);
+			Vector2 newShapePosition = touchPosition + _shapeDragAndDropConfig.DragOffset;
 			shapeTransform.position = newShapePosition + _centerOffset;
 			CheckMagnet(deltaTime);
 		}

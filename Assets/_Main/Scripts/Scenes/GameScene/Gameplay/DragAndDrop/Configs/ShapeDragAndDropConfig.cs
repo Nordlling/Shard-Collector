@@ -13,5 +13,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs
         [Min(0)] public float ShapeMoveToPatternDuration = 0.2f;
         [Min(0)] public float ShapeMoveToSelectorDuration = 0.3f;
         [Min(0)] public float ShapeScaleDuration = 0.3f;
+        public Vector2 DragOffset = new(-5f, 0f);
     }
 }
