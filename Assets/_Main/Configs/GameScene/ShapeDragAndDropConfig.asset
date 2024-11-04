@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinOverlapCount: 0
   MaxOverlapDistance: 5
-  StartLevelShapeMoveToPatternDelay: 2
+  StartLevelShapeMoveToPatternDelay: 1.5
   ShadowMoveSpeed: 15
   ShapeMoveToPatternDuration: 0.2
   ShapeMoveToSelectorDuration: 0.3
