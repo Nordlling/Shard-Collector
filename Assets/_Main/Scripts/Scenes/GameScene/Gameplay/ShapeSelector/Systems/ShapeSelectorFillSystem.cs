@@ -91,7 +91,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
                     _inProgress = false;
                     _shapesInMove = true;
                     shapeEntity.AddComponent<ShapeToSelectorSignal>();
-                    shapeEntity.AddComponent<ShapeInMoveMarker>();
                 });
             }
         }

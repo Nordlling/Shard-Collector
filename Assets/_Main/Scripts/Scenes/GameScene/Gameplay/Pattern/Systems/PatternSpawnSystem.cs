@@ -8,6 +8,7 @@ using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Render.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views;
+using _Main.Scripts.Scenes.GameScene.Services.Level.CurrentLevel;
 using _Main.Scripts.Scenes.GameScene.Services.Level.Status;
 using _Main.Scripts.Toolkit.Extensions.Geometry;
 using _Main.Scripts.Toolkit.Polygon;
@@ -27,6 +28,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
         private readonly GameBoardContent _gameBoardContent;
         private readonly PolygonAreaCalculator _polygonAreaCalculator;
         private readonly ShapeGrouper _shapeGrouper;
+        private readonly ICurrentLevelService _currentLevelService;
         private readonly ILevelPlayStatusService _levelPlayStatusService;
 
         private Filter _createPatternShapesFilter;
@@ -35,7 +37,8 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
 
         public PatternSpawnSystem(IPool<ShapeView> pool, GenerateConfig generateConfig, 
             RenderConfig renderConfig, IRandomService randomService, GameBoardContent gameBoardContent, 
-            PolygonAreaCalculator polygonAreaCalculator, ShapeGrouper shapeGrouper, ILevelPlayStatusService levelPlayStatusService)
+            PolygonAreaCalculator polygonAreaCalculator, ShapeGrouper shapeGrouper, 
+            ICurrentLevelService currentLevelService, ILevelPlayStatusService levelPlayStatusService)
         {
             _pool = pool;
             _generateConfig = generateConfig;
@@ -44,6 +47,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
             _gameBoardContent = gameBoardContent;
             _polygonAreaCalculator = polygonAreaCalculator;
             _shapeGrouper = shapeGrouper;
+            _currentLevelService = currentLevelService;
             _levelPlayStatusService = levelPlayStatusService;
         }
 
@@ -64,10 +68,11 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
             
             if (TryCreatePattern(patternEntity))
             {
+                var shapesGenerateInfo = _currentLevelService.GetCurrentLevel().ShapesGenerateInfo ?? _generateConfig.ShapesGenerateInfo;
                 var shapeComponent = patternEntity.GetComponent<ShapeComponent>();
-                var minWeight = shapeComponent.Area * _generateConfig.MinShapeAreaFraction;
-                var maxWeight = shapeComponent.Area * _generateConfig.MaxShapeAreaFraction;
-                CreateShapesByPattern(shapeComponent.Triangles, minWeight, maxWeight, shapeComponent.ShapeView.MeshFilter.mesh.bounds.size);
+                var minWeight = shapeComponent.Area *  shapesGenerateInfo.MinShapeAreaFraction;
+                var maxWeight = shapeComponent.Area * shapesGenerateInfo.MaxShapeAreaFraction;
+                CreateShapesByPattern(shapeComponent.Triangles, minWeight, maxWeight, shapeComponent.ShapeView.MeshFilter.sharedMesh.bounds.size);
             }
         }
 
@@ -93,7 +98,8 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
             Triangulation2D triangulation;
             try
             {
-                triangulation = new Triangulation2D(polygon, _generateConfig.Angle);
+                var shapesGenerateInfo = _currentLevelService.GetCurrentLevel().ShapesGenerateInfo ?? _generateConfig.ShapesGenerateInfo;
+                triangulation = new Triangulation2D(polygon, shapesGenerateInfo.Angle);
                 triangulation.SortVerticesClockwise();
             }
             catch (Exception)

@@ -9,6 +9,7 @@ using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Systems;
+using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems;
 using _Main.Scripts.Toolkit.Polygon;
 using Scellecs.Morpeh;
@@ -40,6 +41,7 @@ namespace _Main.Scripts.Scenes.GameScene.Installers
 
             Container.Bind<ISystem>().To<CleanupEntitySystem<DestroyEntitySignal>>().AsCached();
             Container.Bind<ISystem>().To<CleanupComponentSystem<ShapeSpawnSignal>>().AsCached();
+            Container.Bind<ISystem>().To<CleanupComponentSystem<ShapeSelectorResortSignal>>().AsCached();
             Container.Bind<ISystem>().To<CleanupComponentSystem<CreatePatternSignal>>().AsCached();
             
             Container.Bind<GameBoardInitializer>().AsSingle();

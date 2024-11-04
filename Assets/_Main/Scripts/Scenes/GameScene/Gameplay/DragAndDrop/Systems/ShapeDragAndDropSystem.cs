@@ -143,7 +143,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			var shapeView = _draggedShapeEntity.GetComponent<ShapeComponent>().ShapeView;
 			shapeView.ShadowTransform.gameObject.SetActive(false);
 			bool newShape = !_draggedShapeEntity.Has<ShapeOnPatternMarker>();
-			_draggedShapeEntity.AddComponent<ShapeInMoveMarker>();
 
 			if (!_magnet)
 			{
@@ -151,6 +150,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			}
 			else
 			{
+				_draggedShapeEntity.AddComponent<ShapeInMoveMarker>();
 				DropShapeWithMagnet(shapeView, newShape);
 			}
 		}

@@ -40,8 +40,8 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Render.Views
             GL.PushMatrix();
             GL.MultMatrix(shapeComponent.ShapeView.transform.localToWorldMatrix);
 
-            _renderConfig.LineMaterial.SetColor("_Color", Color.black);
-            _renderConfig.LineMaterial.SetPass(0);
+            // _renderConfig.LineMaterial.SetColor("_Color", Color.black);
+            // _renderConfig.LineMaterial.SetPass(0);
 			
             GL.Begin(GL.LINES);
             for (int i = 0; i < shapeComponent.Triangles.Length; i++)

@@ -33,6 +33,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
                 .With<ShapeToSelectorSignal>()
                 .With<ShapeInSelectorComponent>()
                 .With<ShapeComponent>()
+                .Without<ShapeInMoveMarker>()
                 .Build();
             
             _shapesFromSelectorFilter = World.Filter
@@ -67,13 +68,14 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
                 float targetPositionX = shapeSelectorComponent.Rect.center.x;
                 var targetPosition = new Vector2(targetPositionX, targetPositionY);
 
-                var bounds = shapeComponent.ShapeView.MeshFilter.mesh.bounds;
+                var bounds = shapeComponent.ShapeView.MeshFilter.sharedMesh.bounds;
                 var maxSize = Math.Max(bounds.size.x, bounds.size.y);
                 var resultSize = Vector3.one * (shapeSelectorComponent.CellSize / maxSize);
                 resultSize *= 0.8f;
                 
                 var shapeTransform = shapeComponent.ShapeView.transform;
                 
+                entity.AddComponent<ShapeInMoveMarker>();
                 DOTween.Sequence()
                     .Append(shapeTransform.DOMove(targetPosition, _shapeDragAndDropConfig.ShapeMoveToSelectorDuration))
                     .Join(shapeTransform.DOScale(resultSize, _shapeDragAndDropConfig.ShapeScaleDuration))
