@@ -102,6 +102,7 @@ namespace _Main.Scripts.Scenes.GameScene.LevelCreation
             }
             
             File.WriteAllText(filePath, json);
+            levelId++;
             logMessage += $"SUCCESS: JSON file saved at: {filePath}\n";
             Debug.Log(logMessage);
         }
