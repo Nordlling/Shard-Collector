@@ -16,12 +16,11 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 		[SerializeField] private MeshFilter shadowMeshFilter;
 		[SerializeField] private Transform shadowTransform;
 		
-		[SerializeField] [ReadOnly] private Entity _entity;
+		private Entity _entity;
 		
 		public MeshFilter MeshFilter => meshFilter;
 		public MeshFilter ShadowMeshFilter => shadowMeshFilter;
 		public Transform ShadowTransform => shadowTransform;
-		public Rigidbody ShapeRigidbody => shapeRigidbody;
 		public MeshRenderer MeshRenderer => meshRenderer;
 
 		public void Init(Entity entity, Material meshRendererMaterial, bool renderLines = true)
