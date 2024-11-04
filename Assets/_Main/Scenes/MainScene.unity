@@ -1174,6 +1174,10 @@ PrefabInstance:
       propertyPath: m_fontSizeMax
       value: 147.1
       objectReference: {fileID: 0}
+    - target: {fileID: 347160257810276413, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3506df19ade8d45d18bdb8c4c48dc5fd, type: 2}
     - target: {fileID: 1098935937982451113, guid: 2ae7a7560bb974494b0b255ffec311d7, type: 3}
       propertyPath: m_Name
       value: PlayButton
