@@ -1,4 +1,5 @@
 using System;
+using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Data;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -7,20 +8,17 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Configs
     [CreateAssetMenu(menuName = "Configs/GameScene/Generate", fileName = "GenerateConfig")]
     public class GenerateConfig : ScriptableObject
     {
-        public float Angle = 20f;
-        [Range(0f, 1f)] [OnValueChanged(nameof(OnValueChanged))] public float MinShapeAreaFraction = 0.05f;
-        [Range(0f, 1f)] [OnValueChanged(nameof(OnValueChanged))] public float MaxShapeAreaFraction = 0.15f;
-        
+        [OnValueChanged(nameof(OnValueChanged))] public ShapesGenerateInfo ShapesGenerateInfo;
         
         private void OnValueChanged()
         {
-            if (MinShapeAreaFraction > MaxShapeAreaFraction)
+            if (ShapesGenerateInfo.MinShapeAreaFraction > ShapesGenerateInfo.MaxShapeAreaFraction)
             {
-                MinShapeAreaFraction = MaxShapeAreaFraction;
+                ShapesGenerateInfo.MinShapeAreaFraction = ShapesGenerateInfo.MaxShapeAreaFraction;
             }
 
-            MinShapeAreaFraction = (float) Math.Round(MinShapeAreaFraction, 2);
-            MaxShapeAreaFraction = (float) Math.Round(MaxShapeAreaFraction, 2);
+            ShapesGenerateInfo.MinShapeAreaFraction = (float) Math.Round(ShapesGenerateInfo.MinShapeAreaFraction, 2);
+            ShapesGenerateInfo.MaxShapeAreaFraction = (float) Math.Round(ShapesGenerateInfo.MaxShapeAreaFraction, 2);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Reflection;
 using _Main.Scripts.Global.ConfigSystem.Level.Data;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Views;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Configs;
+using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Data;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -26,6 +27,7 @@ namespace _Main.Scripts.Scenes.GameScene.LevelCreation
         [SerializeField] private bool rewrite;
         [SerializeField, OnValueChanged(nameof(ChangeThreshold))] private float threshold;
         [SerializeField, ShowIf(nameof(useCustomLevelName))] private string customLevelName;
+        [SerializeField] private bool useCustomShapeGenerateSettings;
         [SerializeField] private SimpleLevelInfo levelInfo = new();
 
         private void Awake()
@@ -72,6 +74,8 @@ namespace _Main.Scripts.Scenes.GameScene.LevelCreation
                 Debug.LogError(logMessage);
                 return;
             }
+
+            levelInfo.ShapesGenerateInfo = useCustomShapeGenerateSettings ? levelInfo.ShapesGenerateInfo : null;
             
             string levelName = useCustomLevelName ? customLevelName : string.Format(LevelNameTemplate, levelId);
             string json = JsonConvert.SerializeObject(levelInfo, Formatting.Indented);
@@ -148,6 +152,7 @@ namespace _Main.Scripts.Scenes.GameScene.LevelCreation
     [Serializable]
     internal class SimpleLevelInfo
     {
+        public ShapesGenerateInfo ShapesGenerateInfo;
         public int ExtraMoves;
         public List<SimpleVector2> Points;
     }
