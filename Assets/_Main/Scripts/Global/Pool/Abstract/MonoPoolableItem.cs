@@ -28,5 +28,7 @@ namespace _Main.Scripts.Global.Pool.Abstract
 		public virtual void OnSetupItem() { }
 
 		public virtual void OnResetItem() { }
+		
+		public virtual void OnDisposeItem() { }
 	}
 }

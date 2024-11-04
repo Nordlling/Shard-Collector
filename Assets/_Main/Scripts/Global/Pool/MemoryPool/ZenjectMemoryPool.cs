@@ -34,6 +34,7 @@ namespace _Main.Scripts.Global.Pool.MemoryPool
 		protected override void OnDestroyed(TItem item)
 		{
 			item.OnDestroyItem();
+			item.OnDisposeItem();
 		}
 
 	}

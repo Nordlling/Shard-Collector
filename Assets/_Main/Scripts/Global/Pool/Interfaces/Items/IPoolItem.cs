@@ -10,5 +10,6 @@ namespace _Main.Scripts.Global.Pool.Interfaces.Items
 		void OnSetupItem();
 		void OnResetItem();
 		void OnDestroyItem();
+		void OnDisposeItem();
 	}
 }
