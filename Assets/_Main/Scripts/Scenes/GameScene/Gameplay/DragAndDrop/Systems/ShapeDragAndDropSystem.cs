@@ -163,6 +163,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			}
 			else
 			{
+				_draggedShapeEntity.AddComponent<ShapeInMoveMarker>();
 				shapeView.transform
 					.DOMove(_oldPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration)
 					.OnKill(() =>
