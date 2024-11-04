@@ -102,7 +102,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			{
 				var shapeView = entity.GetComponent<ShapeComponent>().ShapeView;
 
-				if (!touchPosition.IsInsideMesh(shapeView.MeshFilter.mesh, shapeView.transform))
+				if (!touchPosition.IsInsideMesh(shapeView.MeshFilter.sharedMesh, shapeView.transform))
 				{
 					continue;
 				}

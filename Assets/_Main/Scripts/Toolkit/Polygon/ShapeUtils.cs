@@ -7,9 +7,8 @@ namespace _Main.Scripts.Toolkit.Polygon
 {
 	public static class ShapeUtils 
 	{
-		public static Mesh CreateMesh(Triangle2D[] triangles)
+		public static Mesh CreateMesh(Triangle2D[] triangles, Mesh mesh)
 		{
-			Mesh mesh = new Mesh();
 			List<Vector3> vertices = new List<Vector3>();
 			List<int> indices = new List<int>();
 

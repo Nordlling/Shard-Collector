@@ -50,15 +50,17 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Systems
                 UnityEngine.Debug.LogError("Null triangles");
                 return;
             }
-                
+            
             Vector3 offset = ShapeUtils.RecalculateCenter(spawnSignal.Triangles);
-            Mesh mesh = ShapeUtils.CreateMesh(spawnSignal.Triangles);
-
+            
             var shapeView = _pool.Get();
+            Mesh mesh = shapeView.MeshFilter.sharedMesh;
+            mesh.Clear();
+            ShapeUtils.CreateMesh(spawnSignal.Triangles, mesh);
+            
             shapeView.Init(entity, _renderConfig.ShapeMaterial, false);
             shapeView.SetupTransformProperties(spawnSignal.Parent, spawnSignal.Position, spawnSignal.Size);
-            shapeView.MeshFilter.sharedMesh = mesh;
-            shapeView.ShadowMeshFilter.sharedMesh = mesh;
+            
             Vector3 shapePosition = shapeView.transform.position;
             List<Vector3> externalPoints = ShapeUtils.FindExternalPoints(spawnSignal.Triangles, shapePosition);
             

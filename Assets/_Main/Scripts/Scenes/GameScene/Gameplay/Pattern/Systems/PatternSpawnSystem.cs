@@ -101,12 +101,13 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
                 return false;
             }
 
-            Mesh mesh = triangulation.Build();
-            
             ShapeView patternView = _pool.Get();
+            Mesh mesh = patternView.MeshFilter.sharedMesh;
+            mesh.Clear();
+            triangulation.Build(mesh);
+            
             shapeSignal.Position.z = 1f;
             patternView.SetupTransformProperties(shapeSignal.Parent, shapeSignal.Position, shapeSignal.Size);
-            patternView.MeshFilter.sharedMesh = mesh;
             
             List<Vector3> externalPoints = ShapeUtils.FindExternalPoints(triangulation.Triangles, patternView.transform.position);
             double area = _polygonAreaCalculator.CalculateArea(externalPoints);

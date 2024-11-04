@@ -2,7 +2,6 @@
 using _Main.Scripts.Scenes.GameScene.Gameplay.Render.Views;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using Scellecs.Morpeh;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views 
@@ -23,6 +22,14 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 		public Transform ShadowTransform => shadowTransform;
 		public MeshRenderer MeshRenderer => meshRenderer;
 
+
+		public override void OnInitializeItem()
+		{
+			Mesh mesh = new Mesh();
+			meshFilter.sharedMesh = mesh;
+			shadowMeshFilter.sharedMesh = mesh;
+		}
+		
 		public void Init(Entity entity, Material meshRendererMaterial, bool renderLines = true)
 		{
 			_entity = entity;
@@ -33,7 +40,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 		public override void OnResetItem()
 		{
 			_entity = null;
-			ShadowMeshFilter.mesh = null;
 			Paths.Clear(); // for test view
 		}
 
@@ -42,6 +48,14 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 			transform.SetParent(parent, false);
 			transform.localPosition = position;
 			transform.localScale = size;
+		}
+
+		public override void OnDisposeItem()
+		{
+			if (meshFilter.sharedMesh!= null)
+			{
+				Destroy(meshFilter.sharedMesh);
+			}
 		}
 
 		// for test view

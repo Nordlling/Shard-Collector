@@ -41,8 +41,7 @@ namespace mattatz.Triangulation2DSystem {
 			Triangulate (polygon.Vertices.Select(v => v.Coordinate).ToArray(), angle, threshold);
 		}
 
-		public Mesh Build () {
-			var mesh = new Mesh();
+		public Mesh Build (Mesh mesh) {
 
 			var vertices = P.Select(p => { 
 				var xy = p.Coordinate;
