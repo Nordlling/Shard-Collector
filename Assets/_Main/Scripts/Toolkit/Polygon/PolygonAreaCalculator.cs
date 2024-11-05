@@ -24,9 +24,8 @@ namespace _Main.Scripts.Toolkit.Polygon
             _clipper.Clear();
             for (int i = 0; i < shapesOfExternalOffsets.Count; i++)
             {
-                var pathsForTestView = new List<PathD>();  // for test view
                 var worldPosition = i < worldPositions.Count ? worldPositions[i] : Vector3.zero;
-                CombineByExternalOffsets(shapesOfExternalOffsets[i], worldPosition, pathsForTestView);
+                CombineByExternalOffsets(shapesOfExternalOffsets[i], worldPosition);
             }
             
             return CalculateUnionArea(fillRule);
@@ -37,9 +36,8 @@ namespace _Main.Scripts.Toolkit.Polygon
             _clipper.Clear();
             for (int i = 0; i < worldPositions.Count; i++)
             {
-                var pathsForTestView = new List<PathD>();  // for test view
                 var worldPosition = i < worldPositions.Count ? worldPositions[i] : Vector3.zero;
-                CombineByTriangles(shapesOfTriangles[i], worldPosition, pathsForTestView);
+                CombineByTriangles(shapesOfTriangles[i], worldPosition);
             }
 
             return CalculateUnionArea(fillRule);
@@ -48,14 +46,11 @@ namespace _Main.Scripts.Toolkit.Polygon
         private double CalculateUnionArea(FillRule fillRule)
         {
             _clipper.Execute(ClipType.Union, fillRule, _solutionClosed, _solutionOpen);
-            
-            // UnityEngine.Object.FindObjectOfType<ShapeUnionViewer>().ShapeSolution = _solutionClosed; // for test view
-
             double totalArea = Clipper.Area(_solutionClosed);
             return totalArea;
         }
 
-        private void CombineByExternalOffsets(List<Vector3> externalOffsets, Vector3 worldPosition, List<PathD> pathsForTestView = null)
+        private void CombineByExternalOffsets(List<Vector3> externalOffsets, Vector3 worldPosition)
         {
             _path.Clear();
             foreach (var offset in externalOffsets)
@@ -63,11 +58,9 @@ namespace _Main.Scripts.Toolkit.Polygon
                 _path.Add(CreatePoint(offset, worldPosition));
             }
             _clipper.AddSubject(_path);
-                
-            pathsForTestView?.Add(new PathD(_path)); // for test view
         }
 
-        private void CombineByTriangles(Triangle2D[] triangles, Vector3 worldPosition, List<PathD> pathsForTestView = null)
+        private void CombineByTriangles(Triangle2D[] triangles, Vector3 worldPosition)
         {
             foreach (var triangle in triangles)
             {
@@ -76,8 +69,6 @@ namespace _Main.Scripts.Toolkit.Polygon
                 _path.Add(CreatePoint(triangle.b.Coordinate, worldPosition));
                 _path.Add(CreatePoint(triangle.c.Coordinate, worldPosition));
                 _clipper.AddSubject(_path);
-                
-                pathsForTestView?.Add(new PathD(_path)); // for test view
             }
         }
 

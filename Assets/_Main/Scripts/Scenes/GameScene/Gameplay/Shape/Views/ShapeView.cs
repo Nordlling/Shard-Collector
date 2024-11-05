@@ -1,6 +1,5 @@
 ﻿using _Main.Scripts.Global.Pool.Abstract;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Render.Views;
-using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using Scellecs.Morpeh;
 using UnityEngine;
 
@@ -40,7 +39,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 		public override void OnResetItem()
 		{
 			_entity = null;
-			Paths.Clear(); // for test view
 		}
 
 		public void SetupTransformProperties(Transform parent, Vector3 position, Vector3 size)
@@ -55,44 +53,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 			if (meshFilter.sharedMesh!= null)
 			{
 				Destroy(meshFilter.sharedMesh);
-			}
-		}
-
-		// for test view
-		[SerializeField] private bool show = true;
-		public System.Collections.Generic.List<Clipper2Lib.PathD> Paths = new();
-
-		private void OnDrawGizmos()
-		{
-			if (!show)
-			{
-				return;
-			}
-			
-			if (_entity?.Has<ShapeComponent>() ?? false)
-			{
-				Gizmos.color = Color.red;
-				var offsets = _entity.GetComponent<ShapeComponent>().ExternalPointOffsets;
-				int offsetsCount = offsets.Count;
-				var position = transform.position;
-
-				for (int i = 0; i < offsetsCount; i++)
-				{
-					int nextIndex = (i + 1) % offsetsCount;
-					Gizmos.DrawLine(position + offsets[i], position + offsets[nextIndex]);
-				}
-			}
-
-			Gizmos.color = Color.yellow;
-			foreach (var path in Paths)
-			{
-				int count = path.Count;
-				for (int i = 0; i < count; i++)
-				{
-					int nextIndex = (i + 1) % count;
-					Gizmos.DrawLine(new Vector3((float)path[i].x, (float)path[i].y, 0f),
-						new Vector3((float)path[nextIndex].x, (float)path[nextIndex].y, 0f));
-				}
 			}
 		}
 
