@@ -81,6 +81,8 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
                     .Join(shapeTransform.DOScale(resultSize, _shapeDragAndDropConfig.ShapeScaleDuration))
                     .OnComplete(() =>
                     {
+                        shapeComponent.SortingOrder = 0;
+                        shapeComponent.ShapeView.UpdateSortingOrder(shapeComponent.SortingOrder);
                         entity.RemoveComponent<ShapeToSelectorSignal>();
                         entity.RemoveComponent<ShapeInMoveMarker>();
                     });

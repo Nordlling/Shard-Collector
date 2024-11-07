@@ -20,7 +20,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.LevelComplete.Systems
         private readonly IGameStateMachine _gameStateMachine;
 
         private readonly List<Vector3> _worldPositions = new();
-        private readonly List<List<Vector3>> _shapesOfExternalOffsets = new();
+        private readonly List<Vector3[]> _shapesOfExternalOffsets = new();
 
         private Filter _shapeInSelectorFilter;
         private Filter _shapeOnPatternMarkerFilter;

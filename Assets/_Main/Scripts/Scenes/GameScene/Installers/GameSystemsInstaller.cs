@@ -24,6 +24,7 @@ namespace _Main.Scripts.Scenes.GameScene.Installers
         {
             Container.Bind<PolygonAreaCalculator>().AsSingle();
             Container.Bind<ShapeGrouper>().AsSingle();
+            Container.Bind<ILayerService>().To<LayerService>().AsSingle();
             
             Container.Bind<IWorldRunner>().To<WorldRunner>().AsSingle();
             Container.Bind<ISystemGroupContainer>().To<SystemGroupContainer>().AsSingle();

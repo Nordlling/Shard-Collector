@@ -1,5 +1,6 @@
 using _Main.Scripts.Global.Ecs.World;
 using _Main.Scripts.Global.GameStateMachine;
+using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems;
 using _Main.Scripts.Scenes.GameScene.Gameplay.GameBoard.Systems;
 using _Main.Scripts.Scenes.GameScene.Gameplay.GameBoard.View;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Components;
@@ -21,15 +22,17 @@ namespace _Main.Scripts.Scenes.GameScene.GameSceneStates
         private readonly ICurrentLevelService _currentLevelService;
         private readonly GameBoardContent _gameBoardContent;
         private readonly GameBoardInitializer _gameBoardInitializer;
+        private readonly ILayerService _layerService;
 
         public StartLevelState(IWorldRunner worldRunner, IInputService inputService, ICurrentLevelService currentLevelService, 
-            GameBoardContent gameBoardContent, GameBoardInitializer gameBoardInitializer)
+            GameBoardContent gameBoardContent, GameBoardInitializer gameBoardInitializer, ILayerService layerService)
         {
             _worldRunner = worldRunner;
             _inputService = inputService;
             _currentLevelService = currentLevelService;
             _gameBoardContent = gameBoardContent;
             _gameBoardInitializer = gameBoardInitializer;
+            _layerService = layerService;
         }
 
         public UniTask Enter()
@@ -65,6 +68,7 @@ namespace _Main.Scripts.Scenes.GameScene.GameSceneStates
                 Position = new Vector3(0f, 0f, 5f)
             });
             
+            _layerService.ResetLayers();
             _gameBoardInitializer.Init();
         }
     }

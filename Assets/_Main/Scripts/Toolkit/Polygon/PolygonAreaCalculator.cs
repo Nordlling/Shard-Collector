@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Clipper2Lib;
+using DG.Tweening.Plugins.Core.PathCore;
 using mattatz.Triangulation2DSystem;
 using UnityEngine;
 
@@ -12,14 +13,14 @@ namespace _Main.Scripts.Toolkit.Polygon
         private readonly PathsD _solutionOpen = new();
         private readonly PathD _path = new();
         
-        public double CalculateArea(List<Vector3> vertices, FillRule fillRule = FillRule.NonZero)
+        public double CalculateArea(Vector3[] vertices, FillRule fillRule = FillRule.NonZero)
         {
             _clipper.Clear();
             CombineByExternalOffsets(vertices, Vector3.zero);
             return CalculateUnionArea(fillRule);
         }
 
-        public double CalculateUnionArea(List<Vector3> worldPositions, List<List<Vector3>> shapesOfExternalOffsets, FillRule fillRule = FillRule.NonZero)
+        public double CalculateUnionArea(List<Vector3> worldPositions, List<Vector3[]> shapesOfExternalOffsets, FillRule fillRule = FillRule.NonZero)
         {
             _clipper.Clear();
             for (int i = 0; i < shapesOfExternalOffsets.Count; i++)
@@ -50,7 +51,7 @@ namespace _Main.Scripts.Toolkit.Polygon
             return totalArea;
         }
 
-        private void CombineByExternalOffsets(List<Vector3> externalOffsets, Vector3 worldPosition)
+        private void CombineByExternalOffsets(Vector3[] externalOffsets, Vector3 worldPosition)
         {
             _path.Clear();
             foreach (var offset in externalOffsets)
@@ -75,6 +76,29 @@ namespace _Main.Scripts.Toolkit.Polygon
         private PointD CreatePoint(Vector2 point, Vector3 worldPosition)
         {
             return new PointD(point.x + worldPosition.x, point.y + worldPosition.y);
+        }
+        
+        
+        private static readonly PathsD Paths1 = new() { new PathD() };
+        private static readonly PathsD Paths2 = new() { new PathD() };
+        
+        public static bool DoPolygonsIntersect(Vector3[] poly1, Vector3[] poly2)
+        {
+            FillPaths(Paths1, poly1);
+            FillPaths(Paths2, poly2);
+
+            PathsD solution = Clipper.Intersect(Paths1, Paths2, FillRule.NonZero);
+            
+            return solution.Count > 0;
+        }
+
+        private static void FillPaths(PathsD paths, Vector3[] polygon)
+        {
+            paths[0].Clear();
+            foreach (var point in polygon)
+            {
+                paths[0].Add(new PointD(point.x, point.y));
+            }
         }
         
     }

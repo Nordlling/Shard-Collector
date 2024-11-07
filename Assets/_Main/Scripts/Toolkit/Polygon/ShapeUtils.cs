@@ -77,7 +77,7 @@ namespace _Main.Scripts.Toolkit.Polygon
 			return offset;
 		}
 
-		public static List<Vector3> FindExternalPoints(Triangle2D[] triangles, Vector3 shapeCenterPosition)
+		public static Vector3[] FindExternalPoints(Triangle2D[] triangles, Vector3 shapeCenterPosition)
 		{
 			List<Vector3> externalPoints = new();
 			List<Edge> externalEdges = new();
@@ -88,11 +88,11 @@ namespace _Main.Scripts.Toolkit.Polygon
 				TryAddPoint(shapeCenterPosition, externalEdge.PointB, externalPoints);
 			}
 
-			return externalPoints;
+			return externalPoints.ToArray();
 		}
 
-		public static bool ShapeInsidePolygon(Vector3 shapePosition, List<Vector3> shapeExternalOffsets, 
-			Vector3 polygonPosition, List<Vector3> polygonExternalOffsets)
+		public static bool ShapeInsidePolygon(Vector3 shapePosition, Vector3[] shapeExternalOffsets, 
+			Vector3 polygonPosition, Vector3[] polygonExternalOffsets)
 		{
 			foreach (var externalOffset in shapeExternalOffsets)
 			{
@@ -106,10 +106,10 @@ namespace _Main.Scripts.Toolkit.Polygon
 			return true;
 		}
 
-		public static bool PointInPolygon(Vector3 point, Vector3 polygonPosition, List<Vector3> polygonExternalOffsets) 
+		public static bool PointInPolygon(Vector3 point, Vector3 polygonPosition, Vector3[] polygonExternalOffsets) 
 		{
 			bool result = false;
-			var length = polygonExternalOffsets.Count;
+			var length = polygonExternalOffsets.Length;
 			for(int i = 0, j = length - 1; i < length; j = i++)
 			{
 				var position = polygonPosition + polygonExternalOffsets[i];

@@ -238,8 +238,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingScreen: {fileID: 8001121724136395657}
-  setSeed: 0
-  seed: 253
+  setSeed: 1
+  seed: 403
 --- !u!1 &7259753496123873945
 GameObject:
   m_ObjectHideFlags: 0

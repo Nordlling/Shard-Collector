@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using _Main.Scripts.Global.Ecs.Extensions;
 using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
-using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Components;
 using _Main.Scripts.Scenes.GameScene.Services.Level.Status;
 using _Main.Scripts.Toolkit.Extensions.Geometry;
@@ -11,6 +12,7 @@ using _Main.Scripts.Toolkit.InputSystem;
 using _Main.Scripts.Toolkit.Polygon;
 using DG.Tweening;
 using Scellecs.Morpeh;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
@@ -20,6 +22,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 		private readonly IInputService _inputService;
 		private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
 		private readonly ILevelPlayStatusService _levelPlayStatusService;
+		private readonly ILayerService _layerService;
 
 		private Filter _shapesFilter;
 		private Filter _patternFilter;
@@ -38,11 +41,13 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 		
 		public World World { get; set; }
 
-		public ShapeDragAndDropSystem(IInputService inputService, ShapeDragAndDropConfig shapeDragAndDropConfig, ILevelPlayStatusService levelPlayStatusService)
+		public ShapeDragAndDropSystem(IInputService inputService, ShapeDragAndDropConfig shapeDragAndDropConfig, 
+			ILevelPlayStatusService levelPlayStatusService, ILayerService layerService)
 		{
 			_inputService = inputService;
 			_shapeDragAndDropConfig = shapeDragAndDropConfig;
 			_levelPlayStatusService = levelPlayStatusService;
+			_layerService = layerService;
 		}
 
 		public void OnAwake()
@@ -111,6 +116,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 				_oldPosition = shapeView.transform.position;
 				_dragging = true;
 				_centerOffset = shapeView.transform.position - touchPosition;
+				shapeView.UpdateSortingOrder(100);
 				if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
 				{
 					_draggedShapeEntity.AddComponent<ShapeFromSelectorSignal>();
@@ -144,38 +150,17 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			shapeView.ShadowTransform.gameObject.SetActive(false);
 			bool newShape = !_draggedShapeEntity.Has<ShapeOnPatternMarker>();
 
-			if (!_magnet)
+			if (_magnet)
 			{
-				DropShapeWithoutMagnet(shapeView, newShape);
+				DropShapeWithMagnet(newShape);
 			}
 			else
 			{
-				_draggedShapeEntity.AddComponent<ShapeInMoveMarker>();
-				DropShapeWithMagnet(shapeView, newShape);
+				DropShapeWithoutMagnet(newShape);
 			}
 		}
 
-		private void DropShapeWithoutMagnet(ShapeView shapeView, bool newShape)
-		{
-			if (newShape)
-			{
-				_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
-			}
-			else
-			{
-				_draggedShapeEntity.AddComponent<ShapeInMoveMarker>();
-				shapeView.transform
-					.DOMove(_oldPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration)
-					.OnKill(() =>
-					{
-						_draggedShapeEntity.RemoveComponent<ShapeInMoveMarker>();
-						_draggedShapeEntity = null;
-					});
-				
-			}
-		}
-
-		private void DropShapeWithMagnet(ShapeView shapeView, bool newShape)
+		private void DropShapeWithMagnet(bool newShape)
 		{
 			if (newShape)
 			{
@@ -183,15 +168,26 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 				_draggedShapeEntity.RemoveComponent<ShapeInSelectorComponent>();
 				_shapeSelectorFilter.First().AddComponent<ShapeSelectorResortSignal>();
 			}
+			else
+			{
+				_layerService.RemoveShapeAndResortLayers(_draggedShapeEntity);
+			}
 			
-			shapeView.transform
-				.DOMove(_newPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration)
-				.OnKill(() =>
-				{
-					_draggedShapeEntity.RemoveComponent<ShapeInMoveMarker>();
-					_draggedShapeEntity = null;
-					_levelPlayStatusService.UseMove(newShape);
-				});
+			_layerService.FindLayerForShape(_draggedShapeEntity, _newPosition);
+			
+			MoveToPattern(_newPosition, () => _levelPlayStatusService.UseMove(newShape));
+		}
+
+		private void DropShapeWithoutMagnet(bool newShape)
+		{
+			if (newShape)
+			{
+				_draggedShapeEntity.AddComponent<ShapeToSelectorSignal>();
+			}
+			else
+			{
+				MoveToPattern(_oldPosition);
+			}
 		}
 
 		private void CheckMagnet(float deltaTime)
@@ -252,7 +248,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			}
 		}
 
-		private Vector3 FindMinDistanceFromMagnetMap(Vector3 shapePosition, List<Vector3> shapeExternalOffsets, Vector3 patternPosition, List<Vector3> patternExternalOffsets)
+		private Vector3 FindMinDistanceFromMagnetMap(Vector3 shapePosition, Vector3[] shapeExternalOffsets, Vector3 patternPosition, Vector3[] patternExternalOffsets)
 		{
 			Vector3 minDistance = _maxVector;
 
@@ -290,11 +286,22 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			currentTransform.position = currentPosition;
 		}
 
-		public void Dispose()
+		private void MoveToPattern(Vector2 targetPosition, Action onComplete = null)
 		{
+			_draggedShapeEntity.AddComponent<ShapeInMoveMarker>();
+			var shapeComponent = _draggedShapeEntity.GetComponent<ShapeComponent>();
+			shapeComponent.ShapeView.transform
+				.DOMove(targetPosition, _shapeDragAndDropConfig.ShapeMoveToPatternDuration)
+				.OnComplete(() =>
+				{
+					shapeComponent.ShapeView.UpdateSortingOrder(shapeComponent.SortingOrder);
+					_draggedShapeEntity.RemoveComponent<ShapeInMoveMarker>();
+					_draggedShapeEntity = null;
+					onComplete?.Invoke();
+				});
 		}
+
+		public void Dispose() { }
 		
 	}
-
 }
-

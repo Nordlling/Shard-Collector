@@ -62,7 +62,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Systems
             shapeView.SetupTransformProperties(spawnSignal.Parent, spawnSignal.Position, spawnSignal.Size);
             
             Vector3 shapePosition = shapeView.transform.position;
-            List<Vector3> externalPoints = ShapeUtils.FindExternalPoints(spawnSignal.Triangles, shapePosition);
+            var externalPoints = ShapeUtils.FindExternalPoints(spawnSignal.Triangles, shapePosition);
             
             mesh.FillUV();
             shapePosition -= offset;

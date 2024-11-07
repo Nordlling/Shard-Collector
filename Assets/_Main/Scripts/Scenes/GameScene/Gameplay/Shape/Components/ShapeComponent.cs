@@ -12,8 +12,9 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components
 	{
 		public ShapeView ShapeView;
 		public double Area;
+		public int SortingOrder;
 		public Vector3[] Points;
-		public List<Vector3> ExternalPointOffsets;
+		public Vector3[] ExternalPointOffsets;
 		public Triangle2D[] Triangles;
 	}
 }

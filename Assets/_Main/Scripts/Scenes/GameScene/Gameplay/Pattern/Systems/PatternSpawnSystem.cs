@@ -115,7 +115,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
             shapeSignal.Position.z = 1f;
             patternView.SetupTransformProperties(shapeSignal.Parent, shapeSignal.Position, shapeSignal.Size);
             
-            List<Vector3> externalPoints = ShapeUtils.FindExternalPoints(triangulation.Triangles, patternView.transform.position);
+            var externalPoints = ShapeUtils.FindExternalPoints(triangulation.Triangles, patternView.transform.position);
             double area = _polygonAreaCalculator.CalculateArea(externalPoints);
             
             ShapeComponent patternShapeComponent = new ShapeComponent
