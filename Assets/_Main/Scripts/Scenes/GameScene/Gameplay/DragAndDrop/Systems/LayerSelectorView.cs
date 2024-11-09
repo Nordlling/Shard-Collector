@@ -1,8 +1,6 @@
-using System;
 using _Main.Scripts.Global.UI.Buttons.Handlers;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
@@ -15,7 +13,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
         [SerializeField] private TextMeshProUGUI layerLabel;
         
         private ILayerService _layerService;
-
 
         [Inject]
         public void Construct(ILayerService layerService)
@@ -79,7 +76,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 
         private void ResetView()
         {
-            layerLabel.text = "-1";
+            layerLabel.text = "All";
         }
         
     }
