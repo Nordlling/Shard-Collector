@@ -81,7 +81,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			{
 				shapeComponent.ShapeView.UpdateSortingOrder(layerIndex);
 			}
-			PainterView.Layers = Layers.SelectMany(layer => layer.Values).ToList();
 		}
 
 		public void RemoveShapeAndResortLayers(Entity entity)
