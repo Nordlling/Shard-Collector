@@ -103,6 +103,9 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			
 			Vector3 touchPosition = _inputService.GetTouchPositionInWorld();
 
+			Entity shapeEntityToTake = null;
+			int sortingOrder = int.MinValue;
+
 			foreach (var entity in _shapesFilter)
 			{
 				var shapeView = entity.GetComponent<ShapeComponent>().ShapeView;
@@ -112,16 +115,36 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 					continue;
 				}
 				
-				_draggedShapeEntity = entity;
-				_oldPosition = shapeView.transform.position;
-				_dragging = true;
-				_centerOffset = shapeView.transform.position - touchPosition;
-				shapeView.UpdateSortingOrder(100);
-				if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
+				int entitySortingOrder = shapeView.MeshRenderer.sortingOrder;
+				
+				if (_layerService.CurrentLayer != -1 && _layerService.CurrentLayer != entitySortingOrder)
 				{
-					_draggedShapeEntity.AddComponent<ShapeFromSelectorSignal>();
+					continue;
 				}
-				break;
+
+				if (shapeView.MeshRenderer.sortingOrder > sortingOrder)
+				{
+					shapeEntityToTake = entity;
+					sortingOrder = shapeView.MeshRenderer.sortingOrder;
+				}
+				
+			}
+
+			if (shapeEntityToTake == null)
+			{
+				return;
+			}
+			
+			_draggedShapeEntity = shapeEntityToTake;
+			var shapeViewToTake = shapeEntityToTake.GetComponent<ShapeComponent>().ShapeView;
+			_oldPosition = shapeViewToTake.transform.position;
+			_dragging = true;
+			_centerOffset = shapeViewToTake.transform.position - touchPosition;
+			shapeViewToTake.UpdateSortingOrder(100);
+			_layerService.ChangeLayerView(-1);
+			if (_draggedShapeEntity.Has<ShapeInSelectorComponent>())
+			{
+				_draggedShapeEntity.AddComponent<ShapeFromSelectorSignal>();
 			}
 		}
 

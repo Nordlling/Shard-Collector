@@ -14,8 +14,8 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
         List<Dictionary<Entity, Vector3[]>> Layers { get; }
         void ChangeLayerView(int layer);
         void ResetLayers();
-        void FindLayerForShape(Entity shapeEntity);
-        void FindLayerForShape(Entity shapeEntity, Vector3 shapePosition);
+        void FindLayerForShape(Entity shapeEntity, bool updateSortingOrder = true);
+        void FindLayerForShape(Entity shapeEntity, Vector3 shapePosition, bool updateSortingOrder = true);
         void RemoveShapeAndResortLayers(Entity entity);
     }
 }

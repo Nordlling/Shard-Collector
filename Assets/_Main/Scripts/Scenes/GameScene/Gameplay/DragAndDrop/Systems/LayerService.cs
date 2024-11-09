@@ -42,17 +42,18 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			OnLayersReset?.Invoke();
 		}
 
-		public void FindLayerForShape(Entity shapeEntity)
+		public void FindLayerForShape(Entity shapeEntity, bool updateSortingOrder = true)
 		{
-			FindLayerForShape(shapeEntity, shapeEntity.GetComponent<ShapeComponent>().ShapeView.transform.position);
+			FindLayerForShape(shapeEntity, shapeEntity.GetComponent<ShapeComponent>().ShapeView.transform.position, updateSortingOrder);
 		}
 
-		public void FindLayerForShape(Entity shapeEntity, Vector3 shapePosition)
+		public void FindLayerForShape(Entity shapeEntity, Vector3 shapePosition, bool updateSortingOrder = true)
 		{
 			ref var shapeComponent = ref shapeEntity.GetComponent<ShapeComponent>();
 			
-			var actualPoints = shapeComponent.ExternalPointOffsets;
-			for (int i = 0; i < shapeComponent.ExternalPointOffsets.Length; i++)
+			var actualPoints = new Vector3[shapeComponent.ExternalPointOffsets.Length];
+
+			for (int i = 0; i < actualPoints.Length; i++)
 			{
 				actualPoints[i] = shapeComponent.ExternalPointOffsets[i] + shapePosition;
 			}
@@ -74,8 +75,12 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
 			}
 
 			layerIndex++;
-			Layers[layerIndex].Add(shapeEntity, actualPoints.ToArray());
+			Layers[layerIndex].Add(shapeEntity, actualPoints);
 			shapeComponent.SortingOrder = layerIndex;
+			if (updateSortingOrder)
+			{
+				shapeComponent.ShapeView.UpdateSortingOrder(layerIndex);
+			}
 			PainterView.Layers = Layers.SelectMany(layer => layer.Values).ToList();
 		}
 
