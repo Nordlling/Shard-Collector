@@ -67,15 +67,18 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Systems
 		{
 			if (_inputService.InputActivity && _patternDrawingConfig.Enabled)
 			{
-				if (Input.GetMouseButtonDown(0)) {
+				if (_inputService.OnTouchedDown()) 
+				{
 					_dragging = true;
-					_points.Clear();
-				} else if(Input.GetMouseButtonUp(0)) {
+				} 
+				else if (_inputService.OnTouchedUp())
+				{
 					_dragging = false;
 					CreatePattern();
 					_pointsText = string.Join(",", _points.Select(el => $"\"x\":{el.x}, \"y\":{el.y}").ToList());
 					_patternDrawingConfig.Enabled = false;
 					_layerService.ResetLayers();
+					_points.Clear();
 				}
 			}
 
@@ -97,7 +100,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Systems
 			}
 			
 			Entity patternEntity = World.CreateEntity();
-			patternEntity.SetComponent(new CreatePatternSignal { Points = _points });
+			patternEntity.SetComponent(new CreatePatternSignal { Points = new List<Vector2>(_points) });
 			patternEntity.SetComponent(new ShapeSpawnSignal
 			{
 				Parent = _gameBoardContent.PatternContent,
