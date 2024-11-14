@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Views;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using _Main.Scripts.Toolkit.Polygon;
 using Scellecs.Morpeh;
 using Sirenix.Utilities;
 using UnityEngine;
 
-namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
+namespace _Main.Scripts.Scenes.GameScene.Services.Layer
 {
 	public class LayerService : ILayerService
 	{

@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using _Main.Scripts.Global.Ecs.Extensions;
 using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Components;
+using _Main.Scripts.Scenes.GameScene.Services.Layer;
 using _Main.Scripts.Scenes.GameScene.Services.Level.Status;
 using _Main.Scripts.Toolkit.Extensions.Geometry;
 using _Main.Scripts.Toolkit.InputSystem;
 using _Main.Scripts.Toolkit.Polygon;
 using DG.Tweening;
 using Scellecs.Morpeh;
-using Sirenix.Utilities;
 using UnityEngine;
 
 namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems

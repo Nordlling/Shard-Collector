@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Scellecs.Morpeh;
 using UnityEngine;
 
-namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
+namespace _Main.Scripts.Scenes.GameScene.Services.Layer
 {
     public interface ILayerService
     {

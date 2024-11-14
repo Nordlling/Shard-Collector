@@ -1,9 +1,10 @@
 using _Main.Scripts.Global.UI.Buttons.Handlers;
+using _Main.Scripts.Scenes.GameScene.Services.Layer;
 using TMPro;
 using UnityEngine;
 using Zenject;
 
-namespace _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems
+namespace _Main.Scripts.Scenes.GameScene.UI.Views.GameView
 {
     public class LayerSelectorView : MonoBehaviour
     {
