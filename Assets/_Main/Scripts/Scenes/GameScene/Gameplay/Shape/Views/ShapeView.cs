@@ -57,6 +57,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 			_entity = null;
 			_layerService.OnLayerViewChanged -= SetViewByLayer;
 			_layerService.OnLayersReset -= ResetSortingOrder;
+			meshRenderView.Reset();
 		}
 
 		public void SetupTransformProperties(Transform parent, Vector3 position, Vector3 size)

@@ -9,6 +9,8 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Render.Views
 {
     public class MeshRenderView : MonoBehaviour
     {
+        [SerializeField] private LineRenderer lineRenderer;
+        
         private RenderConfig _renderConfig;
         private Entity _entity;
 
@@ -21,8 +23,21 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Render.Views
         public void Init(Entity entity)
         {
             _entity = entity;
+            if (_entity.IsNullOrDisposed())
+            {
+                lineRenderer.positionCount = 0;
+                return;
+            }
+            var shapeComponent = _entity.GetComponent<ShapeComponent>();
+            lineRenderer.positionCount = shapeComponent.ExternalPointOffsets.Length;
+            lineRenderer.SetPositions(shapeComponent.ExternalPointOffsets);
         }
-        
+
+        public void Reset()
+        {
+            lineRenderer.positionCount = 0;
+        }
+
         private void OnRenderObject()
         {
             if (!_renderConfig.ShowLinesOnPattern || _entity.IsNullOrDisposed())
