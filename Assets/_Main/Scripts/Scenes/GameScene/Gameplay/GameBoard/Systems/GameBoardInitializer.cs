@@ -1,5 +1,6 @@
 using System;
 using _Main.Scripts.Global.Ecs.World;
+using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.GameBoard.View;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Configs;
@@ -15,14 +16,16 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.GameBoard.Systems
         private readonly ShapeSelectorConfig _shapeSelectorConfig;
         private readonly IWorldRunner _worldRunner;
         private readonly GameBoardContent _gameBoardContent;
+        private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
 
         public GameBoardInitializer(IScreenService screenService, ShapeSelectorConfig shapeSelectorConfig, 
-            IWorldRunner worldRunner, GameBoardContent gameBoardContent)
+            IWorldRunner worldRunner, GameBoardContent gameBoardContent, ShapeDragAndDropConfig shapeDragAndDropConfig)
         {
             _screenService = screenService;
             _shapeSelectorConfig = shapeSelectorConfig;
             _worldRunner = worldRunner;
             _gameBoardContent = gameBoardContent;
+            _shapeDragAndDropConfig = shapeDragAndDropConfig;
         }
 
         public void Init()
@@ -53,7 +56,10 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.GameBoard.Systems
                 MaxCount = _shapeSelectorConfig.MaxCount
             });
 
-            entity.AddComponent<AllShapesInSelectorSignal>();
+            entity.SetComponent(new AllShapesInSelectorSignal
+            {
+                Delay = _shapeDragAndDropConfig.StartLevelShapeMoveToPatternDelay
+            });
         }
     }
 }

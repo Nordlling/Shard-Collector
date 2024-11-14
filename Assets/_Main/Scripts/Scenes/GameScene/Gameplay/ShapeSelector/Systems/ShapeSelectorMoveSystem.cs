@@ -1,10 +1,8 @@
 using System;
 using _Main.Scripts.Global.Ecs.Extensions;
-using _Main.Scripts.Global.GameStateMachine;
 using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Components;
-using _Main.Scripts.Scenes.GameScene.GameSceneStates;
 using DG.Tweening;
 using Scellecs.Morpeh;
 using UnityEngine;
@@ -14,17 +12,15 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
     public class ShapeSelectorMoveSystem : ISystem
     {
         private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
-        private readonly IGameStateMachine _gameStateMachine;
         private Filter _shapeSelectorFilter;
         private Filter _shapesToSelectorFilter;
         private Filter _shapesFromSelectorFilter;
 
         public World World { get; set; }
 
-        public ShapeSelectorMoveSystem(ShapeDragAndDropConfig shapeDragAndDropConfig, IGameStateMachine gameStateMachine)
+        public ShapeSelectorMoveSystem(ShapeDragAndDropConfig shapeDragAndDropConfig)
         {
             _shapeDragAndDropConfig = shapeDragAndDropConfig;
-            _gameStateMachine = gameStateMachine;
         }
 
         public void OnAwake()

@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 using _Main.Scripts.Global.Ecs.Extensions;
 using _Main.Scripts.Global.GameStateMachine;
-using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Components;
 using _Main.Scripts.Scenes.GameScene.GameSceneStates;
 using _Main.Scripts.Toolkit.Extensions.Collections;
 using _Main.Scripts.Toolkit.Random;
-using DG.Tweening;
 using Scellecs.Morpeh;
 
 namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
@@ -17,23 +15,19 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
     {
         private readonly IGameStateMachine _gameStateMachine;
         private readonly IRandomService _randomService;
-        private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
         
         private Filter _shapesFilter;
         private Filter _allShapeInSelectorFilter;
-        private Filter _shapesInMoveFilter;
+        private Filter _shapesToSelectorFilter;
 
         private readonly List<Entity> _shapes = new();
-        private bool _shapesInMove;
-        private bool _inProgress;
 
         public World World { get; set; }
 
-        public ShapeSelectorFillSystem(IGameStateMachine gameStateMachine, IRandomService randomService, ShapeDragAndDropConfig shapeDragAndDropConfig)
+        public ShapeSelectorFillSystem(IGameStateMachine gameStateMachine, IRandomService randomService)
         {
             _gameStateMachine = gameStateMachine;
             _randomService = randomService;
-            _shapeDragAndDropConfig = shapeDragAndDropConfig;
         }
 
         public void OnAwake()
@@ -48,32 +42,46 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
                 .Without<ShapeDestroySignal>()
                 .Build();
             
-            _shapesInMoveFilter = World.Filter
+            _shapesToSelectorFilter = World.Filter
                 .With<ShapeToSelectorSignal>()
                 .Build();
         }
 
         public void OnUpdate(float deltaTime)
         {
-            if (_inProgress || !_allShapeInSelectorFilter.TryGetFirstEntity(out var entity))
+            if (!_allShapeInSelectorFilter.TryGetFirstEntity(out var entity))
             {
                 return;
             }
 
-            if (_shapesInMove)
-            {
-                if (_shapesInMoveFilter.GetLengthSlow() <= 0)
-                {
-                    entity.RemoveComponent<AllShapesInSelectorSignal>();
-                    _shapesInMove = false;
-                    _gameStateMachine.Enter<PlayLevelState>();
-                }
+            ref var allShapesInSelectorSignal = ref entity.GetComponent<AllShapesInSelectorSignal>();
 
+            if (allShapesInSelectorSignal.Delay > 0f)
+            {
+                allShapesInSelectorSignal.Delay -= deltaTime;
                 return;
             }
-
-            _shapes.Clear();
             
+            if (allShapesInSelectorSignal.InMove)
+            {
+                CheckAllShapesFinishMove(entity);
+                return;
+            }
+            
+            StartFillSelector(ref allShapesInSelectorSignal);
+        }
+
+        private void CheckAllShapesFinishMove(Entity entity)
+        {
+            if (_shapesToSelectorFilter.GetLengthSlow() <= 0)
+            {
+                entity.RemoveComponent<AllShapesInSelectorSignal>();
+                _gameStateMachine.Enter<PlayLevelState>();
+            }
+        }
+
+        private void StartFillSelector(ref AllShapesInSelectorSignal allShapesInSelectorSignal)
+        {
             foreach (var shapeEntity in _shapesFilter)
             {
                 _shapes.Add(shapeEntity);
@@ -85,14 +93,11 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.ShapeSelector.Systems
             {
                 var shapeEntity = _shapes[i];
                 shapeEntity.SetComponent(new ShapeInSelectorComponent { Index = i });
-                _inProgress = true;
-                DOVirtual.DelayedCall(_shapeDragAndDropConfig.StartLevelShapeMoveToPatternDelay, () =>
-                {
-                    _inProgress = false;
-                    _shapesInMove = true;
-                    shapeEntity.AddComponent<ShapeToSelectorSignal>();
-                });
+                shapeEntity.AddComponent<ShapeToSelectorSignal>();
             }
+
+            allShapesInSelectorSignal.InMove = true;
+            _shapes.Clear();
         }
 
         public void Dispose()

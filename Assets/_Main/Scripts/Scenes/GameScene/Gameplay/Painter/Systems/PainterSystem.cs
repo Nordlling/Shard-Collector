@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using _Main.Scripts.Global.Ecs.Extensions;
-using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems;
+using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Configs;
 using _Main.Scripts.Scenes.GameScene.Gameplay.GameBoard.View;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Views;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Components;
@@ -28,6 +28,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Systems
 		private readonly ICurrentLevelService _currentLevelService;
 		private readonly GameBoardContent _gameBoardContent;
 		private readonly ILayerService _layerService;
+		private readonly ShapeDragAndDropConfig _shapeDragAndDropConfig;
 
 		private bool _dragging;
 		private List<Vector2> _points = new();
@@ -38,7 +39,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Systems
 
 		public PainterSystem(IInputService inputService, PatternDrawingConfig patternDrawingConfig,
 			PainterView painterView, ICurrentLevelService currentLevelService, GameBoardContent gameBoardContent,
-			ILayerService layerService)
+			ILayerService layerService, ShapeDragAndDropConfig shapeDragAndDropConfig)
 		{
 			_inputService = inputService;
 			_patternDrawingConfig = patternDrawingConfig;
@@ -46,6 +47,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Systems
 			_currentLevelService = currentLevelService;
 			_gameBoardContent = gameBoardContent;
 			_layerService = layerService;
+			_shapeDragAndDropConfig = shapeDragAndDropConfig;
 		}
 
 		public void OnAwake()
@@ -104,7 +106,10 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Painter.Systems
 
 			if (_shapeSelectorFilter.TryGetFirstEntity(out var shapeSelectorEntity))
 			{
-				shapeSelectorEntity.AddComponent<AllShapesInSelectorSignal>();
+				shapeSelectorEntity.SetComponent(new AllShapesInSelectorSignal
+				{
+					Delay = _shapeDragAndDropConfig.StartLevelShapeMoveToPatternDelay
+				});
 			}
 		}
 		
