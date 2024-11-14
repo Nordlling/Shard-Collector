@@ -25,7 +25,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Render.Views
         
         private void OnRenderObject()
         {
-            if (_entity.IsNullOrDisposed())
+            if (!_renderConfig.ShowLinesOnPattern || _entity.IsNullOrDisposed())
             {
                 return;
             }
