@@ -7,8 +7,8 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.CurrentLevel
     public interface ICurrentLevelService
     {
         bool CanLevelUp { get; }
+        LevelInfo CurrentLevel { get; }
         CompletedLevelSaveData LastCompletedLevel { get; }
-        LevelInfo GetCurrentLevel();
         void FinishLevel(int percent);
         bool TryLevelUp();
     }

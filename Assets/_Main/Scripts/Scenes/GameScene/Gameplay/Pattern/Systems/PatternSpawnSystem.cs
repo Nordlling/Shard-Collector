@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using _Main.Scripts.Global.Ecs.Extensions;
 using _Main.Scripts.Global.Pool.Interfaces.Pool;
 using _Main.Scripts.Scenes.GameScene.Gameplay.GameBoard.View;
@@ -68,7 +67,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
             
             if (TryCreatePattern(patternEntity))
             {
-                var shapesGenerateInfo = _currentLevelService.GetCurrentLevel().ShapesGenerateInfo ?? _generateConfig.ShapesGenerateInfo;
+                var shapesGenerateInfo = _currentLevelService.CurrentLevel.ShapesGenerateInfo ?? _generateConfig.ShapesGenerateInfo;
                 var shapeComponent = patternEntity.GetComponent<ShapeComponent>();
                 var minWeight = shapeComponent.Area *  shapesGenerateInfo.MinShapeAreaFraction;
                 var maxWeight = shapeComponent.Area * shapesGenerateInfo.MaxShapeAreaFraction;
@@ -98,7 +97,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Pattern.Systems
             Triangulation2D triangulation;
             try
             {
-                var shapesGenerateInfo = _currentLevelService.GetCurrentLevel().ShapesGenerateInfo ?? _generateConfig.ShapesGenerateInfo;
+                var shapesGenerateInfo = _currentLevelService.CurrentLevel.ShapesGenerateInfo ?? _generateConfig.ShapesGenerateInfo;
                 triangulation = new Triangulation2D(polygon, shapesGenerateInfo.Angle);
                 triangulation.SortVerticesClockwise();
             }

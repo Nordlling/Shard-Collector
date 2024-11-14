@@ -13,11 +13,11 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.CurrentLevel
         private readonly ILevelSaveService _levelSaveService;
         private readonly LevelConfig _levelConfig;
         private readonly LevelCompleteConfig _levelCompleteConfig;
-        private LevelInfo _currentLevel;
         private int _levelId;
 
         public bool CanLevelUp => LastCompletedLevel.Stars > 0;
         public CompletedLevelSaveData LastCompletedLevel { get; private set; } = new();
+        public LevelInfo CurrentLevel { get; private set; }
 
         public CurrentLevelService(ILevelLoadService levelLoadService, ILevelSaveService levelSaveService, LevelConfig levelConfig, LevelCompleteConfig levelCompleteConfig)
         {
@@ -27,11 +27,6 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.CurrentLevel
             _levelCompleteConfig = levelCompleteConfig;
 
             LoadActualLevel();
-        }
-
-        public LevelInfo GetCurrentLevel()
-        {
-            return _currentLevel;
         }
 
         public void FinishLevel(int percent)
@@ -55,9 +50,9 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.CurrentLevel
             {
                 var newLevelId = _levelId + 1;
                 _levelId = _levelConfig.LevelsMap.ContainsKey(newLevelId) ? newLevelId : _levelConfig.FirstLevelIndex;
-                _currentLevel = _levelLoadService.GetLevelByLevelId(_levelId);
+                CurrentLevel = _levelLoadService.GetLevelByLevelId(_levelId);
 
-                if (_currentLevel == null)
+                if (CurrentLevel == null)
                 {
                     Debug.LogWarning($"Next levelId({_levelId}) is invalid. Try get another level");
                     continue;
@@ -74,14 +69,14 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.CurrentLevel
         {
             if (_levelConfig.UseDefaultLevel)
             {
-                _currentLevel = _levelLoadService.GetDefaultLevel();
+                CurrentLevel = _levelLoadService.GetDefaultLevel();
                 _levelId = -1;
                 return;
             }
             
             var saveData = _levelSaveService.LoadCurrentLevelData();
             _levelId = saveData?.LevelIndex ?? _levelConfig.FirstLevelIndex;
-            _currentLevel = _levelLoadService.GetLevelByLevelId(_levelId);
+            CurrentLevel = _levelLoadService.GetLevelByLevelId(_levelId);
         }
         
     }

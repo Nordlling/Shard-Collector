@@ -59,7 +59,7 @@ namespace _Main.Scripts.Scenes.GameScene.GameSceneStates
             var patternEntity = _worldRunner.CreateEntity();
             patternEntity.SetComponent(new CreatePatternSignal
             {
-                Points = _currentLevelService.GetCurrentLevel().Points
+                Points = _currentLevelService.CurrentLevel.Points
             });
             patternEntity.SetComponent(new ShapeSpawnSignal
             {

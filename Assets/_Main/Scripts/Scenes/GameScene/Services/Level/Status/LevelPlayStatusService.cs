@@ -24,7 +24,7 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.Status
 
         public void InitNewLevel(int shapesCount)
         {
-            AllMoves = shapesCount + _currentLevelService.GetCurrentLevel().ExtraMoves;
+            AllMoves = shapesCount + _currentLevelService.CurrentLevel.ExtraMoves;
             AllShapes = shapesCount;
             BusyShapes = 0;
             UsedMoves = 0;
