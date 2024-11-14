@@ -1,10 +1,8 @@
 ﻿using _Main.Scripts.Global.Pool.Abstract;
-using _Main.Scripts.Scenes.GameScene.Gameplay.DragAndDrop.Systems;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Render.Views;
 using _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Components;
 using _Main.Scripts.Scenes.GameScene.Services.Layer;
 using Scellecs.Morpeh;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
 
@@ -18,8 +16,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 		[SerializeField] private MeshRenderer shadowMeshRenderer;
 		[SerializeField] private MeshFilter shadowMeshFilter;
 		[SerializeField] private Transform shadowTransform;
-		[SerializeField] private int sortingOrder;
-		[SerializeField] private int shadowSortingOrder;
 		
 		private Entity _entity;
 		private ILayerService _layerService;
@@ -40,8 +36,6 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 			Mesh mesh = new Mesh();
 			meshFilter.sharedMesh = mesh;
 			shadowMeshFilter.sharedMesh = mesh;
-			sortingOrder = meshRenderer.sortingOrder;
-			sortingOrder = shadowMeshRenderer.sortingOrder;
 		}
 		
 		public void Init(Entity entity, Material meshRendererMaterial, bool renderLines = true)
@@ -83,9 +77,7 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.Shape.Views
 		public void UpdateSortingOrder(int orderIndex)
 		{
 			meshRenderer.sortingOrder = orderIndex;
-			sortingOrder = orderIndex;
 			shadowMeshRenderer.sortingOrder = orderIndex;
-			shadowSortingOrder = orderIndex;
 		}
 
 		private void SetViewByLayer(int layerIndex)
