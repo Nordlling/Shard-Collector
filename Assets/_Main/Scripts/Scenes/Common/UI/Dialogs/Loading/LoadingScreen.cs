@@ -23,12 +23,22 @@ namespace _Main.Scripts.Global.UI.Loading
             fillImage.fillAmount = 0f;
         }
 
+        public void Activate()
+        {
+            gameObject.SetActive(true);
+        }
+
         public Tween PlayShowScreen()
         {
             _idleIsActive = true;
             return DOTween.Sequence()
                 .Append(dialogAnimator.PlayShowDialog())
                 .AppendCallback(() => AnimateIdle(1f));
+        }
+        
+        public void Deactivate()
+        {
+            gameObject.SetActive(false);
         }
         
         public Tween PlayHideScreen()

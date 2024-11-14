@@ -27,7 +27,7 @@ namespace _Main.Scripts.Global.GameStates
             _isLoaded = false;
             _idleAnimationIsFinished = false;
             
-            _loadingScreen.gameObject.SetActive(true);
+            _loadingScreen.Activate();
             await _loadingScreen.PlayShowScreen();
             
             _sceneLoader.Load(sceneName, false);
@@ -38,7 +38,7 @@ namespace _Main.Scripts.Global.GameStates
         public async UniTask Exit()
         {
             await _loadingScreen.PlayHideScreen();
-            _loadingScreen.gameObject.SetActive(false);
+            _loadingScreen.Deactivate();
         }
 
         private void MarkFinishLoadScene()
