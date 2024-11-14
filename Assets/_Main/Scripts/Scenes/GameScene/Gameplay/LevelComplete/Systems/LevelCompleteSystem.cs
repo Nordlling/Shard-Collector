@@ -57,16 +57,10 @@ namespace _Main.Scripts.Scenes.GameScene.Gameplay.LevelComplete.Systems
 
         public void OnUpdate(float deltaTime)
         {
-            if (_levelPlayStatusService.LeftMoves > 0 && _levelPlayStatusService.FreeShapes > 0)
-            {
-                _canGameOver = true;
-                return;
-            }
-            
-            if (_canGameOver && (_levelPlayStatusService.LeftMoves <= 0 || _levelPlayStatusService.FreeShapes <= 0))
+            if (_levelPlayStatusService.IsPlaying && (_levelPlayStatusService.LeftMoves <= 0 || _levelPlayStatusService.FreeShapes <= 0))
             {
                 GameOver();
-                _canGameOver = false;
+                _levelPlayStatusService.MarkAsFinished();
             }
         }
 

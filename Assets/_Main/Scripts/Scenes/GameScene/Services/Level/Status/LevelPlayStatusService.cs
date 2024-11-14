@@ -14,6 +14,7 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.Status
 
         public event Action OnUsedMove;
 
+        public bool IsPlaying { get; private set; }
         public int AllMoves { get; private set; }
         public int UsedMoves { get; private set; }
         public int LeftMoves => AllMoves - UsedMoves;
@@ -28,6 +29,7 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.Status
             AllShapes = shapesCount;
             BusyShapes = 0;
             UsedMoves = 0;
+            IsPlaying = true;
             OnUsedMove?.Invoke();
         }
 
@@ -37,5 +39,11 @@ namespace _Main.Scripts.Scenes.GameScene.Services.Level.Status
             BusyShapes += isNewShape ? 1 : 0;
             OnUsedMove?.Invoke();
         }
+
+        public void MarkAsFinished()
+        {
+            IsPlaying = false;
+        }
+        
     }
 }
